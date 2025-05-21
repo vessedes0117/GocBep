@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,11 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\images\placeholder\canh_chua_ca_loc.jpg" />
+    <None Include="wwwroot\images\placeholder\default-recipe-image.png" />
+    <None Include="wwwroot\images\placeholder\ga_nuong_mat_ong.jpg" />
+    <None Include="wwwroot\images\placeholder\suon_xao_chua_ngot.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.16" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
 </Project>

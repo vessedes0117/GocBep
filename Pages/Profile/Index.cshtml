@@ -1,0 +1,60 @@
+﻿@page
+@model GocBep.Pages.Profile.IndexModel
+@{
+    ViewData["Title"] = "Trang Cá Nhân";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+@if (Model.CurrentUser != null)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Thông tin tài khoản</h4>
+            <dl class="row">
+                <dt class="col-sm-5">Tên đăng nhập:</dt>
+                <dd class="col-sm-7">@Model.CurrentUser.UserName</dd>
+
+                <dt class="col-sm-5">Email:</dt>
+                <dd class="col-sm-7">@Model.CurrentUser.Email</dd>
+            </dl>
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-outline-primary btn-sm">Quản lý tài khoản</a>
+        </div>
+
+        <div class="col-md-8">
+            <h4>Công thức bạn đã đăng (@Model.PostedRecipes.Count)</h4>
+            @if (Model.PostedRecipes.Any())
+            {
+                <div class="list-group">
+                    @foreach (var recipe in Model.PostedRecipes)
+                    {
+                        <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">@recipe.Name</h5>
+                                <small>@recipe.CreatedAt.ToString("dd/MM/yyyy")</small>
+                            </div>
+                            <p class="mb-1">@recipe.Description?.Substring(0, Math.Min(recipe.Description?.Length ?? 0, 120))...</p>
+                            <small>Đánh giá: @recipe.AverageRating.ToString("0.0") <i class="fas fa-star text-warning"></i></small>
+                            <div class="mt-2">
+                                <a asp-page="/Recipes/Edit" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-secondary">Sửa</a>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>Bạn chưa đăng công thức nào. <a asp-page="/Recipes/Create">Đăng công thức ngay!</a></p>
+            }
+
+            <h4 class="mt-4">Công thức bạn đã yêu thích (0)</h4>
+            <p><em>(Danh sách công thức yêu thích sẽ hiển thị ở đây sau khi chức năng được hoàn thiện)</em></p>
+
+        </div>
+    </div>
+}
+else
+{
+    <p class="alert alert-danger">Không thể tải thông tin người dùng.</p>
+}

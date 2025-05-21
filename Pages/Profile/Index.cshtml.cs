@@ -24,9 +24,8 @@ namespace GocBep.Pages.Profile
         }
 
         public IdentityUser CurrentUser { get; set; } = default!;
-
         public IList<Recipe> PostedRecipes { get; set; } = new List<Recipe>();
-
+        public IList<Recipe> FavoriteRecipes { get; set; } = new List<Recipe>();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -55,6 +54,30 @@ namespace GocBep.Pages.Profile
                 }
             }
 
+            FavoriteRecipes = await _context.UserFavoriteRecipes
+                                       .Where(ufr => ufr.UserId == CurrentUser.Id)
+                                       .Include(ufr => ufr.Recipe)
+                                           .ThenInclude(r => r.User)
+                                       .Include(ufr => ufr.Recipe)
+                                           .ThenInclude(r => r.Ratings)
+                                       .Select(ufr => ufr.Recipe)
+                                       .OrderByDescending(r => r.CreatedAt)
+                                       .ToListAsync();
+
+            foreach (var recipe in FavoriteRecipes)
+            {
+                if (recipe != null)
+                {
+                    if (recipe.Ratings != null && recipe.Ratings.Any())
+                    {
+                        recipe.AverageRating = recipe.Ratings.Average(r => r.Score);
+                    }
+                    else
+                    {
+                        recipe.AverageRating = 0;
+                    }
+                }
+            }
 
             return Page();
         }

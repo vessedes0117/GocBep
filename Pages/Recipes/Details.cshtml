@@ -1,5 +1,8 @@
 ﻿@page "{id:int}"
 @model GocBep.Pages.Recipes.DetailsModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = Model.Recipe?.Name ?? "Chi Tiết Công Thức";
 }
@@ -87,19 +90,96 @@ else
                     </ul>
                 </div>
 
-                <div class="mt-3">
-                    <h5>Đánh giá công thức này:</h5>
-                    <p><em>(Chức năng đánh giá sẽ được cập nhật sau khi bạn đăng nhập)</em></p>
-                    <button class="btn btn-outline-warning"><i class="far fa-heart"></i> Yêu thích</button>
-                    <p><em>(Chức năng yêu thích sẽ được cập nhật sau khi bạn đăng nhập)</em></p>
-                </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            Đánh giá của bạn
+                        </div>
+                        <div class="card-body">
+                            <form method="post" asp-page-handler="Rate" asp-route-id="@Model.Recipe.Id">
+                                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
+                                <div class="mb-3">
+                                    <label for="ratingScoreInput" class="form-label">Chọn số sao:</label>
+                                    <div id="ratingScoreInput" class="star-rating">
+                                        @for (int i = 5; i >= 1; i--)
+                                        {
+                                            <input type="radio" id="star@(i)" asp-for="RatingScore" value="@i" class="form-check-input visually-hidden" />
+                                            <label for="star@(i)" title="@(i) sao"><i class="fas fa-star"></i></label>
+                                        }
+                                    </div>
+                                    <span asp-validation-for="RatingScore" class="text-danger d-block mt-1"></span>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Gửi Đánh Giá</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mt-4">
+                        Vui lòng <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page(null, new { id = Model.Recipe.Id })">đăng nhập</a> để đánh giá công thức này.
+                    </div>
+                }
+
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="mt-4">
+                        <form method="post" asp-page-handler="ToggleFavorite" asp-route-id="@Model.Recipe.Id" class="d-inline">
+                            @if (Model.IsFavoritedByCurrentUser)
+                            {
+                                <button type="submit" class="btn btn-danger btn-sm" title="Bỏ yêu thích công thức này">
+                                    <i class="fas fa-heart"></i> Đã Yêu Thích
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Yêu thích công thức này">
+                                    <i class="far fa-heart"></i> Yêu Thích
+                                </button>
+                            }
+                        </form>
+                    </div>
+                }
             </div>
         </div>
 
         <hr />
         <div class="mt-3">
             <a asp-page="/Index" class="btn btn-secondary">Quay lại Trang Chủ</a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated && Model.Recipe.UserId == (await UserManager.GetUserAsync(User))?.Id)
+            {
+                <a asp-page="./Edit" asp-route-id="@Model.Recipe.Id" class="btn btn-warning ms-2">Sửa Công Thức</a>
+                <a asp-page="./Delete" asp-route-id="@Model.Recipe.Id" class="btn btn-danger ms-2">Xóa Công Thức</a>
+            }
         </div>
     </div>
+}
+
+@section Scripts {
+    <style>
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            font-size: 1.5rem;
+        }
+
+            .star-rating input[type="radio"] {
+                display: none;
+            }
+
+            .star-rating label {
+                color: #ddd;
+                cursor: pointer;
+                padding: 0 0.1em;
+            }
+
+                .star-rating input[type="radio"]:checked ~ label,
+                .star-rating label:hover,
+                .star-rating label:hover ~ label {
+                    color: #ffc107;
+                }
+    </style>
 }

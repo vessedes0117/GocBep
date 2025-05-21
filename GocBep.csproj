@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\images\placeholder\canh_chua_ca_loc.jpg" />
+    <None Include="wwwroot\images\recipes\canh_chua_ca_loc.jpg" />
     <None Include="wwwroot\images\placeholder\default-recipe-image.png" />
-    <None Include="wwwroot\images\placeholder\ga_nuong_mat_ong.jpg" />
-    <None Include="wwwroot\images\placeholder\suon_xao_chua_ngot.jpg" />
+    <None Include="wwwroot\images\recipes\ga_nuong_mat_ong.jpg" />
+    <None Include="wwwroot\images\recipes\suon_xao_chua_ngot.jpg" />
   </ItemGroup>
 
   <ItemGroup>

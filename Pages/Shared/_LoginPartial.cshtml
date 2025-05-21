@@ -6,6 +6,9 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
+            <a class="nav-link text-dark" asp-page="/Recipes/Create" title="Đăng công thức mới">Đăng Công Thức</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link text-dark" asp-page="/Profile/Index" title="Trang Cá Nhân">Xin chào @User.Identity?.Name!</a>
         </li>
         <li class="nav-item">

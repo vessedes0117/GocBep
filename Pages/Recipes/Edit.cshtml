@@ -1,84 +1,99 @@
-﻿@page
+﻿@page "{id:int}"
 @model GocBep.Pages.Recipes.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh Sửa Công Thức";
 }
 
-<h1>Edit</h1>
-
-<h4>Recipe</h4>
+<h1>@ViewData["Title"]: @Model.Recipe.Name</h1>
+<h4>Cập nhật thông tin cho công thức của bạn</h4>
 <hr />
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
 <div class="row">
-    <div class="col-md-4">
-        <form method="post">
+    <div class="col-md-8">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Recipe.Id" />
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Recipe.Name" class="control-label"></label>
+            <input type="hidden" asp-for="Recipe.UserId" />
+            <input type="hidden" asp-for="Recipe.CreatedAt" />
+            <input type="hidden" asp-for="Recipe.ImageUrl" />
+
+
+            <div class="mb-3">
+                <label asp-for="Recipe.Name" class="form-label"></label>
                 <input asp-for="Recipe.Name" class="form-control" />
                 <span asp-validation-for="Recipe.Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Recipe.Description" class="control-label"></label>
-                <textarea asp-for="Recipe.Description" class="form-control"></textarea>
+
+            <div class="mb-3">
+                <label asp-for="Recipe.Description" class="form-label"></label>
+                <textarea asp-for="Recipe.Description" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Recipe.Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Recipe.Ingredients" class="control-label"></label>
-                <textarea asp-for="Recipe.Ingredients" class="form-control"></textarea>
+
+            <div class="mb-3">
+                <label class="form-label">Ảnh hiện tại:</label><br />
+                @if (!string.IsNullOrEmpty(Model.Recipe.ImageUrl))
+                {
+                    <img src="@Url.Content(Model.Recipe.ImageUrl)" alt="Ảnh hiện tại" style="max-width: 200px; max-height: 200px; margin-bottom: 10px;" />
+                }
+                else
+                {
+                    <img src="@Url.Content("~/images/placeholder/default-recipe-image.png")" alt="Chưa có ảnh" style="max-width: 200px; max-height: 200px; margin-bottom: 10px;" />
+                }
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="UploadedImage" class="form-label">Thay đổi ảnh (chọn file mới nếu muốn thay đổi)</label>
+                <input asp-for="UploadedImage" type="file" class="form-control" accept="image/png, image/jpeg, image/gif" />
+                <span asp-validation-for="UploadedImage" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Recipe.Ingredients" class="form-label"></label>
+                <textarea asp-for="Recipe.Ingredients" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Recipe.Instructions" class="control-label"></label>
-                <textarea asp-for="Recipe.Instructions" class="form-control"></textarea>
+
+            <div class="mb-3">
+                <label asp-for="Recipe.Instructions" class="form-label"></label>
+                <textarea asp-for="Recipe.Instructions" class="form-control" rows="8"></textarea>
                 <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Recipe.ImageUrl" class="control-label"></label>
-                <input asp-for="Recipe.ImageUrl" class="form-control" />
-                <span asp-validation-for="Recipe.ImageUrl" class="text-danger"></span>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Recipe.PrepTime" class="form-label"></label>
+                    <input asp-for="Recipe.PrepTime" type="number" class="form-control" min="0" />
+                    <span asp-validation-for="Recipe.PrepTime" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Recipe.CookTime" class="form-label"></label>
+                    <input asp-for="Recipe.CookTime" type="number" class="form-control" min="0" />
+                    <span asp-validation-for="Recipe.CookTime" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Recipe.Servings" class="form-label"></label>
+                    <input asp-for="Recipe.Servings" type="number" class="form-control" min="1" />
+                    <span asp-validation-for="Recipe.Servings" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Recipe.PrepTime" class="control-label"></label>
-                <input asp-for="Recipe.PrepTime" class="form-control" />
-                <span asp-validation-for="Recipe.PrepTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Recipe.CookTime" class="control-label"></label>
-                <input asp-for="Recipe.CookTime" class="form-control" />
-                <span asp-validation-for="Recipe.CookTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Recipe.Servings" class="control-label"></label>
-                <input asp-for="Recipe.Servings" class="form-control" />
-                <span asp-validation-for="Recipe.Servings" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Recipe.CreatedAt" class="control-label"></label>
-                <input asp-for="Recipe.CreatedAt" class="form-control" />
-                <span asp-validation-for="Recipe.CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Recipe.UserId" class="control-label"></label>
-                <select asp-for="Recipe.UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="Recipe.UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                <a asp-page="./Details" asp-route-id="@Model.Recipe.Id" class="btn btn-secondary">Hủy</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

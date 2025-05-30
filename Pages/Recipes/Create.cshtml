@@ -1,75 +1,164 @@
 ﻿@page
 @model GocBep.Pages.Recipes.CreateModel
-
 @{
     ViewData["Title"] = "Đăng Công Thức Mới";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h4>Chia sẻ công thức tâm huyết của bạn</h4>
-<hr />
-<div class="row">
-    <div class="col-md-8">
-        <form method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<section class="hero-banner form-page-banner">
+    <div class="hero-banner__content">
+        <div class="hero-banner__greeting">
+            <h1 class="hero-banner__greeting-text">@ViewData["Title"]</h1>
+        </div>
+        <div class="hero-banner__description-wrapper">
+            <p class="hero-banner__description-text">
+                Chia sẻ công thức tâm huyết của bạn với cộng đồng!
+            </p>
+        </div>
+    </div>
+    <img class="hero-banner__decor-left" src="@Url.Content("~/figma-assets/images/elements0.png")" alt="Trang trí banner" />
+    <img class="hero-banner__decor-right" src="@Url.Content("~/figma-assets/images/elements1.png")" alt="Trang trí banner" />
+</section>
 
-            <div class="mb-3">
-                <label asp-for="Recipe.Name" class="form-label"></label>
-                <input asp-for="Recipe.Name" class="form-control" />
-                <span asp-validation-for="Recipe.Name" class="text-danger"></span>
-            </div>
+<div class="create-recipe-section">
+    <div class="container">
+        <div class="create-recipe-form-container">
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
-            <div class="mb-3">
-                <label asp-for="Recipe.Description" class="form-label"></label>
-                <textarea asp-for="Recipe.Description" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Recipe.Description" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="UploadedImage" class="form-label">Ảnh đại diện món ăn</label>
-                <input asp-for="UploadedImage" type="file" class="form-control" accept="image/png, image/jpeg, image/gif" />
-                <span asp-validation-for="UploadedImage" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Recipe.Ingredients" class="form-label"></label>
-                <textarea asp-for="Recipe.Ingredients" class="form-control" rows="5" placeholder="Mỗi nguyên liệu một dòng, ví dụ:
-- 1 củ hành tây
-- 200g thịt bò"></textarea>
-                <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Recipe.Instructions" class="form-label"></label>
-                <textarea asp-for="Recipe.Instructions" class="form-control" rows="8" placeholder="Mỗi bước thực hiện một dòng, ví dụ:
-1. Sơ chế nguyên liệu...
-2. Xào thịt bò..."></textarea>
-                <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label asp-for="Recipe.PrepTime" class="form-label"></label>
-                    <input asp-for="Recipe.PrepTime" type="number" class="form-control" min="0" />
-                    <span asp-validation-for="Recipe.PrepTime" class="text-danger"></span>
+                <div class="form-field-group">
+                    <div class="form-field-title">
+                        <div class="form-field-title__text-icon">
+                            <i class="fas fa-utensils form-field-title__icon"></i>
+                            <h4 class="form-field-title__text">Tên món ăn</h4>
+                        </div>
+                        <div class="form-field-title__underline"></div>
+                    </div>
+                    <div class="form-input-wrapper">
+                        <input asp-for="Recipe.Name" class="form-control form-input-custom" placeholder="Ví dụ: Gà nướng mật ong" />
+                        <span asp-validation-for="Recipe.Name" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label asp-for="Recipe.CookTime" class="form-label"></label>
-                    <input asp-for="Recipe.CookTime" type="number" class="form-control" min="0" />
-                    <span asp-validation-for="Recipe.CookTime" class="text-danger"></span>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label asp-for="Recipe.Servings" class="form-label"></label>
-                    <input asp-for="Recipe.Servings" type="number" class="form-control" min="1" />
-                    <span asp-validation-for="Recipe.Servings" class="text-danger"></span>
-                </div>
-            </div>
 
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Đăng Công Thức</button>
-                <a asp-page="/Index" class="btn btn-secondary">Hủy</a>
-            </div>
-        </form>
+                <div class="form-field-group">
+                    <div class="form-field-title">
+                        <div class="form-field-title__text-icon">
+                            <i class="far fa-file-alt form-field-title__icon"></i>
+                            <h4 class="form-field-title__text">Mô tả ngắn</h4>
+                        </div>
+                        <div class="form-field-title__underline"></div>
+                    </div>
+                    <div class="form-textarea-wrapper">
+                        <textarea asp-for="Recipe.Description" class="form-control form-textarea-custom" rows="4" placeholder="Mô tả ngắn gọn, hấp dẫn về món ăn của bạn"></textarea>
+                        <span asp-validation-for="Recipe.Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-field-group">
+                    <div class="form-field-title">
+                        <div class="form-field-title__text-icon">
+                            <i class="fas fa-image form-field-title__icon"></i>
+                            <h4 class="form-field-title__text">Ảnh đại diện món ăn</h4>
+                        </div>
+                        <div class="form-field-title__underline"></div>
+                    </div>
+                    <div class="form-file-upload-wrapper">
+                        <input asp-for="UploadedImage" type="file" class="form-control form-file-custom" accept="image/png, image/jpeg, image/gif" />
+                        <span asp-validation-for="UploadedImage" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-field-group">
+                    <div class="form-field-title">
+                        <div class="form-field-title__text-icon">
+                            <i class="fas fa-shopping-basket form-field-title__icon"></i>
+                            <h4 class="form-field-title__text">Nguyên liệu</h4>
+                        </div>
+                        <div class="form-field-title__underline"></div>
+                    </div>
+                    <div class="form-textarea-wrapper">
+                        <textarea asp-for="Recipe.Ingredients" class="form-control form-textarea-custom" rows="6" placeholder="Mỗi nguyên liệu liệt kê trên một dòng, ví dụ:
+-1 củ hành tây
+-200g thịt bò
+-1/2 thìa cà phê muối"></textarea>
+                        <span asp-validation-for="Recipe.Ingredients" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-field-group">
+                    <div class="form-field-title">
+                        <div class="form-field-title__text-icon">
+                            <i class="fas fa-list-ol form-field-title__icon"></i>
+                            <h4 class="form-field-title__text">Hướng dẫn thực hiện</h4>
+                        </div>
+                        <div class="form-field-title__underline"></div>
+                    </div>
+                    <div class="form-textarea-wrapper">
+                        <textarea asp-for="Recipe.Instructions" class="form-control form-textarea-custom" rows="8" placeholder="Mỗi bước thực hiện trên một dòng, ví dụ:
+1. Sơ chế thịt bò
+2. Xào thịt bò
+3. Trình bày món ăn"></textarea>
+                        <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row-triple">
+                    <div class="form-field-group form-field-group--inline">
+                        <div class="form-field-title">
+                            <div class="form-field-title__text-icon">
+                                <i class="far fa-clock form-field-title__icon"></i>
+                                <h4 class="form-field-title__text">Thời gian chuẩn bị</h4>
+                            </div>
+                            <div class="form-field-title__underline"></div>
+                        </div>
+                        <div class="input-group">
+                            <input asp-for="Recipe.PrepTime" type="number" class="form-control form-input-custom" placeholder="Ví dụ: 10" min="0" />
+                            <span class="input-group-text">Phút</span>
+                        </div>
+                        <span asp-validation-for="Recipe.PrepTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-field-group form-field-group--inline">
+                        <div class="form-field-title">
+                            <div class="form-field-title__text-icon">
+                                <i class="fas fa-fire form-field-title__icon"></i>
+                                <h4 class="form-field-title__text">Thời gian nấu</h4>
+                            </div>
+                            <div class="form-field-title__underline"></div>
+                        </div>
+                        <div class="input-group">
+                            <input asp-for="Recipe.CookTime" type="number" class="form-control form-input-custom" placeholder="Ví dụ: 30" min="0" />
+                            <span class="input-group-text">Phút</span>
+                        </div>
+                        <span asp-validation-for="Recipe.CookTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-field-group form-field-group--inline">
+                        <div class="form-field-title">
+                            <div class="form-field-title__text-icon">
+                                <i class="fas fa-users form-field-title__icon"></i>
+                                <h4 class="form-field-title__text">Khẩu phần</h4>
+                            </div>
+                            <div class="form-field-title__underline"></div>
+                        </div>
+                        <div class="input-group">
+                            <input asp-for="Recipe.Servings" type="number" class="form-control form-input-custom" placeholder="Ví dụ: 4" min="1" />
+                            <span class="input-group-text">Người</span>
+                        </div>
+                        <span asp-validation-for="Recipe.Servings" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4 styled-hr">
+
+                <div class="form-actions">
+                    <a asp-page="/Index" class="btn btn-secondary-custom">Huỷ</a>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Đăng công thức
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

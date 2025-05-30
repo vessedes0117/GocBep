@@ -1,47 +1,95 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@* File: Pages/Shared/_Layout.cshtml *@
+@inject SignInManager<Microsoft.AspNetCore.Identity.IdentityUser> SignInManager
+@inject UserManager<Microsoft.AspNetCore.Identity.IdentityUser> UserManager
+
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - GocBep</title>
+    <title>@ViewData["Title"] - Góc Bếp</title>
+
+    @* Bootstrap CSS (giữ lại nếu bạn vẫn muốn dùng grid và các component khác) *@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <!-- Thêm Font Awesome -->
+
+    @* Google Fonts (Thêm vào đây) *@
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
+
+    @* Font Awesome (Nếu bạn vẫn dùng cho icon sao, hoặc icon khác) *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    @* CSS tùy chỉnh của bạn (site.css) - LUÔN ĐỂ SAU BOOTSTRAP *@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/GocBep.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/GocBep.styles.css" asp-append-version="true" /> *@
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">GocBep</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
+    <header class="header fixed-top">
+        <div class="header2 container">
+            <div class="left-sector">
+                <a class="avatar" asp-page="/Index">
+                    <img class="avatar2" src="@Url.Content("~/figma-assets/icons/avatar1.svg")" alt="Góc Bếp Logo" />
+                    <div class="g-c-b-p">Góc Bếp</div>
+                </a>
+                <nav class="tab">
+                    @* --- PHẦN NÀY ĐÃ THAY ĐỔI --- *@
+                    <div class="tabs-variants">
+                        @* Link Trang chủ luôn hiển thị *@
+                        <div class="tabs-styles">
+                            <div class="tabs-base">
+                                <div class="content">
+                                    <a asp-page="/Index" class="nav-link-figma">Trang chủ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (SignInManager.IsSignedIn(User)) @* Chỉ hiển thị khi đã đăng nhập *@
+                    {
+                        <div class="tabs-variants">
+                            <div class="tabs-styles">
+                                <div class="tabs-base">
+                                    <div class="content">
+                                        <a asp-page="/Recipes/Create" class="nav-link-figma">Đăng công thức</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tabs-variants">
+                            <div class="tabs-styles">
+                                <div class="tabs-base">
+                                    <div class="content">
+                                        @* Giả sử trang cá nhân có tên là /Profile/Index, điều chỉnh nếu cần *@
+                                        <a asp-page="/Profile/Index" class="nav-link-figma">Trang cá nhân</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @* --- KẾT THÚC PHẦN THAY ĐỔI --- *@
+                </nav>
             </div>
-        </nav>
+            <div class="group-button">
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            © 2025 - GocBep - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <footer class="footer border-top">
+        <div class="_2025-g-c-b-p-hi-n-i-all-rights-reserved">
+            © @DateTime.Now.Year - Góc Bếp Hiện Đại. All Rights Reserved.
+        </div>
+        <div class="links">
+            <a asp-page="/Privacy" class="nav-link">Chính sách bảo mật</a>
+            <span class="devider"></span>
+            <a asp-page="/Terms" class="nav-link">Điều khoản sử dụng</a>
         </div>
     </footer>
 

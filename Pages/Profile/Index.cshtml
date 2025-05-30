@@ -4,79 +4,138 @@
     ViewData["Title"] = "Trang Cá Nhân";
 }
 
-<h1>@ViewData["Title"]</h1>
-<hr />
+<style>
+    .profile-page-title {
+        font-family: var(--heading-h2-bold-desktop-font-family, "Inter-Bold", sans-serif);
+        font-size: var(--heading-h2-bold-desktop-font-size, 36px);
+        color: var(--gray-900, #111827);
+        margin-bottom: 24px;
+        text-align: center;
+    }
+</style>
 
-@if (Model.CurrentUser != null)
-{
-    <div class="row">
-        <div class="col-md-4">
-            <h4>Thông tin tài khoản</h4>
-            <dl class="row">
-                <dt class="col-sm-5">Tên đăng nhập:</dt>
-                <dd class="col-sm-7">@Model.CurrentUser.UserName</dd>
+<div class="container mt-4 mb-5 profile-container">
+    <div class="row g-4">
 
-                <dt class="col-sm-5">Email:</dt>
-                <dd class="col-sm-7">@Model.CurrentUser.Email</dd>
-            </dl>
-            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-outline-primary btn-sm">Quản lý tài khoản</a>
+        <div class="col-lg-8">
+
+            <div class="profile-section-card mb-4">
+                <div class="profile-section-title">
+                    <i class="fas fa-edit me-2"></i>
+                    <h4>Công thức bạn đã đăng</h4>
+                    <span class="count ms-2">(@Model.PostedRecipes.Count)</span>
+                </div>
+                @if (Model.PostedRecipes.Any())
+                {
+                    <div class="list-group list-group-flush profile-recipe-list">
+                        @foreach (var recipe in Model.PostedRecipes)
+                        {
+                            <div class="profile-recipe-item">
+                                <div class="recipe-info">
+                                    <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="recipe-name">@recipe.Name</a>
+                                    <div class="recipe-meta">
+                                        <span>@recipe.CreatedAt.ToString("dd/MM/yyyy")</span>
+                                        <span class="mx-1">|</span>
+                                        <span><i class="fas fa-star text-warning me-1"></i>@recipe.AverageRating.ToString("0.0") (@(recipe.Ratings?.Count ?? 0) lượt)</span>
+                                    </div>
+                                    <p class="recipe-description">
+                                        @recipe.Description?.Substring(0, Math.Min(recipe.Description?.Length ?? 0, 150))
+                                        @if ((recipe.Description?.Length ?? 0) > 150)
+                                        {
+                                            <span>...</span>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="recipe-actions">
+                                    <a asp-page="/Recipes/Edit" asp-route-id="@recipe.Id" class="btn btn-sm btn-custom-edit">
+                                        <i class="fas fa-pencil-alt btn-icon-fa"></i> Sửa
+                                    </a>
+                                    <a asp-page="/Recipes/Delete" asp-route-id="@recipe.Id" class="btn btn-sm btn-custom-delete">
+                                        <i class="fas fa-trash-alt btn-icon-fa"></i> Xoá
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Bạn chưa đăng công thức nào. <a asp-page="/Recipes/Create" class="link-primary">Đăng công thức ngay!</a></p>
+                }
+            </div>
+
+            <div class="profile-section-card">
+                <div class="profile-section-title">
+                    <i class="fas fa-heart text-danger me-2"></i>
+                    <h4>Công thức bạn đã yêu thích</h4>
+                    <span class="count ms-2">(@Model.FavoriteRecipes.Count)</span>
+                </div>
+                @if (Model.FavoriteRecipes.Any())
+                {
+                    <div class="list-group list-group-flush profile-recipe-list">
+                        @foreach (var recipe in Model.FavoriteRecipes)
+                        {
+                            @if (recipe != null)
+                            {
+                                <div class="profile-recipe-item">
+                                    <div class="recipe-info">
+                                        <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="recipe-name">@recipe.Name</a>
+                                        <div class="recipe-meta">
+                                            <span>Đăng bởi: @(recipe.User?.UserName ?? "N/A")</span>
+                                            <span class="mx-1">|</span>
+                                            <span><i class="fas fa-star text-warning me-1"></i>@recipe.AverageRating.ToString("0.0") (@(recipe.Ratings?.Count ?? 0) lượt)</span>
+                                        </div>
+                                        <p class="recipe-description">
+                                            @recipe.Description?.Substring(0, Math.Min(recipe.Description?.Length ?? 0, 150))
+                                            @if ((recipe.Description?.Length ?? 0) > 150)
+                                            {
+                                                <span>...</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Bạn chưa yêu thích công thức nào. Hãy <a asp-page="/Index" class="link-primary">khám phá</a> thêm!</p>
+                }
+            </div>
         </div>
 
-        <div class="col-md-8">
-            <h4>Công thức bạn đã đăng (@Model.PostedRecipes.Count)</h4>
-            @if (Model.PostedRecipes.Any())
-            {
-                <div class="list-group">
-                    @foreach (var recipe in Model.PostedRecipes)
-                    {
-                        <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">@recipe.Name</h5>
-                                <small>@recipe.CreatedAt.ToString("dd/MM/yyyy")</small>
-                            </div>
-                            <p class="mb-1">@recipe.Description?.Substring(0, Math.Min(recipe.Description?.Length ?? 0, 120))...</p>
-                            <small>Đánh giá: @recipe.AverageRating.ToString("0.0") <i class="fas fa-star text-warning"></i> (@(recipe.Ratings?.Count ?? 0) lượt)</small>
-                            <div class="mt-2">
-                                <a asp-page="/Recipes/Edit" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-secondary">Sửa</a>
-                                <a asp-page="/Recipes/Delete" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-danger ms-1">Xóa</a>
-                            </div>
-                        </a>
-                    }
+        <div class="col-lg-4">
+            <div class="profile-section-card account-info-card">
+                <div class="profile-section-title">
+                    <i class="fas fa-user-circle me-2"></i>
+                    <h4>Thông tin tài khoản</h4>
                 </div>
-            }
-            else
-            {
-                <p>Bạn chưa đăng công thức nào. <a asp-page="/Recipes/Create">Đăng công thức ngay!</a></p>
-            }
-
-            <h4 class="mt-4">Công thức bạn đã yêu thích (@Model.FavoriteRecipes.Count)</h4>
-            @if (Model.FavoriteRecipes.Any())
-            {
-                <div class="list-group">
-                    @foreach (var recipe in Model.FavoriteRecipes)
-                    {
-                        @if (recipe != null)
-                        {
-                            <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1">@recipe.Name</h5>
-                                    <small>Đăng bởi: @(recipe.User?.UserName ?? "N/A")</small>
-                                </div>
-                                <p class="mb-1">@recipe.Description?.Substring(0, Math.Min(recipe.Description?.Length ?? 0, 120))...</p>
-                                <small>Đánh giá: @recipe.AverageRating.ToString("0.0") <i class="fas fa-star text-warning"></i> (@(recipe.Ratings?.Count ?? 0) lượt)</small>
-                            </a>
-                        }
-                    }
-                </div>
-            }
-            else
-            {
-                <p>Bạn chưa yêu thích công thức nào. Hãy khám phá và <a asp-page="/Index">tìm công thức bạn thích</a>!</p>
-            }
+                @if (Model.CurrentUser != null)
+                {
+                    <dl class="account-details-list">
+                        <div class="detail-item">
+                            <dt>Tên đăng nhập:</dt>
+                            <dd>@Model.CurrentUser.UserName</dd>
+                        </div>
+                        <div class="detail-item">
+                            <dt>Email:</dt>
+                            <dd>@Model.CurrentUser.Email</dd>
+                        </div>
+                    </dl>
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-custom-manage w-100">
+                        <i class="fas fa-cog btn-icon-fa"></i> Quản lý tài khoản
+                    </a>
+                }
+                else
+                {
+                    <p class="alert alert-danger">Không thể tải thông tin người dùng.</p>
+                }
+            </div>
         </div>
     </div>
-}
-else
-{
-    <p class="alert alert-danger">Không thể tải thông tin người dùng.</p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

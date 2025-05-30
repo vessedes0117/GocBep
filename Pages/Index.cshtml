@@ -1,61 +1,108 @@
 ﻿@page
 @model IndexModel
+@inject SignInManager<Microsoft.AspNetCore.Identity.IdentityUser> SignInManager
 @{
-    ViewData["Title"] = "Trang Chủ";
+    ViewData["Title"] = "Trang Chủ - Góc Bếp";
 }
 
-@if (!string.IsNullOrEmpty(Model.StatusMessage))
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @Model.StatusMessage
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<section class="hero-banner">
+    <div class="hero-banner__content">
+        <div class="hero-banner__greeting">
+            <h1 class="hero-banner__greeting-text">Chào mừng đến với</h1>
+            <a class="hero-banner__logo-link" asp-page="/Index">
+                <img class="hero-banner__logo-img" src="@Url.Content("~/figma-assets/icons/avatar1.svg")" alt="Góc Bếp Banner Logo" />
+                <span class="hero-banner__brand-name">Góc Bếp</span>
+            </a>
+        </div>
+        <div class="hero-banner__description-wrapper">
+            <p class="hero-banner__description-text">
+                Khám phá và chia sẻ những công thức nấu ăn tuyệt vời, truyền cảm hứng cho gian bếp của bạn mỗi ngày!
+            </p>
+        </div>
     </div>
-}
+    <img class="hero-banner__decor-left" src="@Url.Content("~/figma-assets/images/elements0.png")" alt="Trang trí banner" />
+    <img class="hero-banner__decor-right" src="@Url.Content("~/figma-assets/images/elements1.png")" alt="Trang trí banner" />
+</section>
 
-<div class="text-center">
-    <h1 class="display-4">Chào mừng đến với Góc Bếp</h1>
-    <p>Khám phá và chia sẻ những công thức nấu ăn tuyệt vời!</p>
-</div>
+<section class="section-title-container">
+    <h2 class="section-title-text">Món Ăn Nổi Bật</h2>
+    <div class="section-title-underline"></div>
+</section>
 
-<hr />
+<section class="recipe-list-section">
+    <div class="container">
+        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @Model.StatusMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
-<div class="container">
-    <div class="row">
         @if (Model.Recipes != null && Model.Recipes.Any())
         {
-            @foreach (var recipe in Model.Recipes)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        @{
-                            var imageUrl = !string.IsNullOrEmpty(recipe.ImageUrl) ? Url.Content(recipe.ImageUrl) : Url.Content("~/images/placeholder/default-recipe-image.png");
-                        }
-                        <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id">
-                            <img src="@imageUrl" class="card-img-top" alt="@recipe.Name" style="height: 200px; object-fit: cover;">
+            <div class="recipe-grid">
+                @foreach (var recipe in Model.Recipes)
+                {
+                    <div class="recipe-card">
+                        <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" aria-label="Xem chi tiết công thức @recipe.Name" class="recipe-card__image-link">
+                            @{
+                                var imageUrl = !string.IsNullOrEmpty(recipe.ImageUrl) ? Url.Content(recipe.ImageUrl) : Url.Content("~/images/placeholder/default-recipe-image.png");
+                            }
+                            <img src="@imageUrl" class="recipe-card__thumbnail" alt="Hình ảnh món @recipe.Name">
                         </a>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">
-                                <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="text-decoration-none">@recipe.Name</a>
-                            </h5>
-                            <p class="card-text flex-grow-1">@recipe.Description?.Substring(0, Math.Min(recipe.Description?.Length ?? 0, 100)) ...</p>
-                            <small class="text-muted">
-                                Đăng bởi: @(recipe.User?.UserName ?? "N/A") <br />
-                                Ngày đăng: @recipe.CreatedAt.ToString("dd/MM/yyyy") <br />
-                                Đánh giá: @recipe.AverageRating.ToString("0.0") <i class="fas fa-star text-warning"></i> (@(recipe.Ratings?.Count ?? 0) lượt)
-                            </small>
-                        </div>
-                        <div class="card-footer text-center">
-                            <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="btn btn-primary btn-sm">Xem Chi Tiết</a>
+                        <div class="recipe-card__body">
+                            <div class="recipe-card__text-content">
+                                <h3 class="recipe-card__title">
+                                    <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="recipe-card__title-link">@recipe.Name</a>
+                                </h3>
+                                <p class="recipe-card__description">
+                                    @(recipe.Description?.Length > 100 ? recipe.Description.Substring(0, 100) + "..." : recipe.Description)
+                                </p>
+                            </div>
+                            <div class="recipe-card__rating-info">
+                                <div class="recipe-card__stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="fas fa-star @(i <= recipe.AverageRating ? "text-warning" : "text-muted-light")"></i>
+                                    }
+                                </div>
+                                <span class="recipe-card__rating-score">@recipe.AverageRating.ToString("0.0")</span>
+                                <span class="recipe-card__rating-count">(@(recipe.Ratings?.Count ?? 0) lượt)</span>
+                            </div>
+                            <div class="recipe-card__meta-info">
+                                <div class="recipe-card__author">
+                                    <i class="fas fa-user-edit recipe-card__icon"></i>
+                                    <span class="recipe-card__author-name">Đăng bởi: @(recipe.User?.UserName ?? "N/A")</span>
+                                </div>
+                                <div class="recipe-card__post-date">
+                                    <i class="far fa-calendar-alt recipe-card__icon"></i>
+                                    <span class="recipe-card__date-text">Ngày đăng: @recipe.CreatedAt.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            </div>
+                            <div class="recipe-card__actions">
+                                <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="btn btn-primary-custom">
+                                    <span class="btn-custom__label">Xem chi tiết</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         }
         else
         {
             <div class="col">
                 <p>Chưa có công thức nào được đăng. Hãy là người đầu tiên!</p>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <p><a asp-page="/Recipes/Create" class="btn btn-primary-custom">Đăng công thức mới</a></p>
+                }
+                else
+                {
+                    <p><a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page("/Recipes/Create")" class="btn btn-primary-custom">Đăng nhập để đăng công thức</a></p>
+                }
             </div>
         }
     </div>
-</div>
+</section>

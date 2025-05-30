@@ -1,50 +1,84 @@
 ﻿@page
 @model LoginModel
-
 @{
     ViewData["Title"] = "Đăng Nhập";
+    Layout = "/Pages/Shared/_AuthLayout.cshtml"; // Sử dụng AuthLayout mới
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <section>
-            <h1 class="text-center">@ViewData["Title"]</h1>
-            <hr />
-            <form id="account" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Địa chỉ Email</label>
+<div class="auth-page-wrapper">
+    <section class="auth-hero-section">
+        <video class="auth-hero-video" autoplay loop muted playsinline poster="@Url.Content("~/figma-assets/images/auth-hero-poster.jpg")">
+            <source src="@Url.Content("~/figma-assets/videos/auth-hero-video.mp4")" type="video/mp4">
+            Trình duyệt của bạn không hỗ trợ thẻ video.
+            <img src="@Url.Content("~/figma-assets/images/auth-hero-poster.jpg")" alt="Góc Bếp Inspiration" class="auth-hero-video-fallback-image" />
+        </video>
+        <div class="auth-hero-titles">
+            <div class="hero-banner__greeting">
+                @* Tái sử dụng class cho dễ style *@
+                <h2 class="hero-banner__greeting-text">Chào mừng đến với</h2>
+                <a class="hero-banner__logo-link" asp-page="/Index">
+                    @* Link logo về trang chủ (nếu cần) hoặc bỏ href *@
+                    <img class="hero-banner__logo-img" src="@Url.Content("~/figma-assets/icons/avatar1.svg")" alt="Góc Bếp Logo" />
+                    <span class="hero-banner__brand-name">Góc Bếp</span>
+                </a>
+            </div>
+            <div class="hero-banner__description-wrapper">
+                <p class="hero-banner__description-text">
+                    Khám phá và chia sẻ những công thức nấu ăn tuyệt vời, truyền cảm hứng cho gian bếp của bạn mỗi ngày!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="auth-form-section">
+        <h1 class="auth-form-title">@ViewData["Title"]</h1>
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <div class="auth-input-group">
+                <div class="form-group-custom">
+                    <label asp-for="Input.Email" class="form-label-custom">Địa chỉ email</label>
+                    <div class="input-wrapper-custom">
+                        <i class="fas fa-envelope input-icon-custom"></i>
+                        <input asp-for="Input.Email" class="input-field-custom" autocomplete="username" aria-required="true" placeholder="Nhập email" />
+                    </div>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Mật khẩu" />
-                    <label asp-for="Input.Password" class="form-label">Mật khẩu</label>
+
+                <div class="form-group-custom">
+                    <label asp-for="Input.Password" class="form-label-custom">Mật khẩu</label>
+                    <div class="input-wrapper-custom">
+                        <i class="fas fa-lock input-icon-custom"></i>
+                        <input asp-for="Input.Password" type="password" class="input-field-custom" autocomplete="current-password" aria-required="true" placeholder="Nhập mật khẩu" />
+                    </div>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        <label asp-for="Input.RememberMe" class="form-check-label">
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
+            </div>
+
+            <div class="auth-assists">
+                <div class="auth-remember-me form-check">
+                    <input class="form-check-input" asp-for="Input.RememberMe" />
+                    <label asp-for="Input.RememberMe" class="form-check-label">
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
                 </div>
                 <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Đăng Nhập</button>
+                    <a id="forgot-password" asp-page="./ForgotPassword" class="auth-forgot-password-link">Quên mật khẩu ?</a>
                 </div>
-                <hr />
-                <div class="text-center">
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký tài khoản mới</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
+            </div>
+
+            <div class="auth-submit-button-container">
+                <button id="login-submit" type="submit" class="btn btn-primary-custom btn-submit-custom">
+                    <i class="fas fa-sign-in-alt btn-submit-icon me-2"></i>
+                    <span>Đăng nhập</span>
+                </button>
+            </div>
+        </form>
+        <div class="auth-signup-prompt">
+            <span class="prompt-text">Chưa có tài khoản ?</span>
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="auth-signup-link">Đăng ký ngay</a>
+        </div>
+    </section>
 </div>
 
 @section Scripts {

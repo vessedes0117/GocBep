@@ -1,42 +1,79 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Đăng Ký Tài Khoản Mới";
+    ViewData["Title"] = "Đăng Ký";
+    Layout = "/Pages/Shared/_AuthLayout.cshtml"; // Sử dụng AuthLayout mới
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h1 class="text-center">@ViewData["Title"]</h1>
-        <hr />
+<div class="auth-page-wrapper">
+    <section class="auth-hero-section">
+        <video class="auth-hero-video" autoplay loop muted playsinline poster="@Url.Content("~/figma-assets/images/auth-hero-poster.jpg")">
+            <source src="@Url.Content("~/figma-assets/videos/auth-hero-video.mp4")" type="video/mp4">
+            Trình duyệt của bạn không hỗ trợ thẻ video.
+            <img src="@Url.Content("~/figma-assets/images/auth-hero-poster.jpg")" alt="Góc Bếp Inspiration" class="auth-hero-video-fallback-image" />
+        </video>
+        <div class="auth-hero-titles">
+            <div class="hero-banner__greeting">
+                <h2 class="hero-banner__greeting-text">Chào mừng đến với</h2>
+                <a class="hero-banner__logo-link" asp-page="/Index">
+                    <img class="hero-banner__logo-img" src="@Url.Content("~/figma-assets/icons/avatar1.svg")" alt="Góc Bếp Logo" />
+                    <span class="hero-banner__brand-name">Góc Bếp</span>
+                </a>
+            </div>
+            <div class="hero-banner__description-wrapper">
+                <p class="hero-banner__description-text">
+                    Khám phá và chia sẻ những công thức nấu ăn tuyệt vời, truyền cảm hứng cho gian bếp của bạn mỗi ngày!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="auth-form-section">
+        <h1 class="auth-form-title">@ViewData["Title"]</h1>
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Địa chỉ Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            <div class="auth-input-group">
+                <div class="form-group-custom">
+                    <label asp-for="Input.Email" class="form-label-custom">Địa chỉ email</label>
+                    <div class="input-wrapper-custom">
+                        <i class="fas fa-envelope input-icon-custom"></i>
+                        <input asp-for="Input.Email" class="input-field-custom" autocomplete="username" aria-required="true" placeholder="Nhập email" />
+                    </div>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Input.Password" class="form-label-custom">Mật khẩu</label>
+                    <div class="input-wrapper-custom">
+                        <i class="fas fa-lock input-icon-custom"></i>
+                        <input asp-for="Input.Password" type="password" class="input-field-custom" autocomplete="new-password" aria-required="true" placeholder="Nhập mật khẩu" />
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group-custom">
+                    <label asp-for="Input.ConfirmPassword" class="form-label-custom">Xác nhận mật khẩu</label>
+                    <div class="input-wrapper-custom">
+                        <i class="fas fa-lock input-icon-custom"></i>
+                        <input asp-for="Input.ConfirmPassword" type="password" class="input-field-custom" autocomplete="new-password" aria-required="true" placeholder="Nhập lại mật khẩu" />
+                    </div>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Mật khẩu" />
-                <label asp-for="Input.Password">Mật khẩu</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            <div class="auth-submit-button-container mt-4">
+                <button id="registerSubmit" type="submit" class="btn btn-primary-custom btn-submit-custom">
+                    <i class="fas fa-user-plus btn-submit-icon me-2"></i>
+                    <span>Đăng ký</span>
+                </button>
             </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Xác nhận mật khẩu" />
-                <label asp-for="Input.ConfirmPassword">Xác nhận mật khẩu</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Đăng Ký</button>
         </form>
-        <hr />
-        <p class="text-center">
-            Đã có tài khoản? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Đăng nhập ngay</a>
-        </p>
-
-    </div>
+        <div class="auth-signup-prompt mt-4">
+            <span class="prompt-text">Đã có tài khoản ?</span>
+            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="auth-signup-link">Đăng nhập ngay</a>
+        </div>
+    </section>
 </div>
 
 @section Scripts {

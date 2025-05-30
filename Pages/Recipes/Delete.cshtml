@@ -5,50 +5,70 @@
     ViewData["Title"] = "Xác Nhận Xóa Công Thức";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    .delete-confirmation-page {
+        background-color: var(--base-background, #f8f9fa);
+        padding-top: var(--padding-96px, 96px);
+        padding-bottom: var(--padding-96px, 96px);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: calc(100vh - 0px - 0px);
+    }
+</style>
 
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div class="alert alert-danger">@Model.ErrorMessage</div>
-    <p>
-        <a asp-page="./Details" asp-route-id="@Model.Recipe?.Id" class="btn btn-secondary">Quay lại Chi Tiết</a>
-        <a asp-page="/Index" class="btn btn-outline-secondary">Về Trang Chủ</a>
-    </p>
-}
-else if (Model.Recipe == null)
-{
-    <div class="alert alert-warning">Không tìm thấy công thức để xóa.</div>
-    <p><a asp-page="/Index" class="btn btn-secondary">Về Trang Chủ</a></p>
-}
-else
-{
-    <h3 class="text-danger">Bạn có chắc chắn muốn xóa công thức này không?</h3>
-    <div>
-        <h4>@Html.DisplayFor(model => model.Recipe.Name)</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-3">Mô tả ngắn:</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Recipe.Description)</dd>
+<div class="delete-confirmation-page">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" style="max-width: 700px;">@Model.ErrorMessage</div>
+    }
+    else if (Model.Recipe == null)
+    {
+        <div class="alert alert-warning" style="max-width: 700px;">Không tìm thấy công thức để xóa.</div>
+    }
+    else
+    {
+        <div class="delete-confirmation-card">
+            <div class="delete-title-section">
+                <h2 class="delete-title-main">Xác nhận xoá công thức</h2>
+                <div class="delete-warning-message">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span>Bạn có chắc chắn muốn xóa công thức này không?</span>
+                </div>
+                <h3 class="recipe-name-confirm">@Html.DisplayFor(model => model.Recipe.Name)</h3>
+            </div>
 
-            <dt class="col-sm-3">Người đăng:</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Recipe.User.UserName)</dd>
+            <div class="recipe-details-summary">
+                <dl class="details-list">
+                    <div class="detail-item">
+                        <dt>Mô tả:</dt>
+                        <dd>@Html.DisplayFor(model => model.Recipe.Description)</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Người đăng:</dt>
+                        <dd>@Html.DisplayFor(model => model.Recipe.User.UserName)</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Ngày đăng:</dt>
+                        <dd>@Model.Recipe.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Recipe.ImageUrl))
+                    {
+                        <div class="detail-item">
+                            <dt>Ảnh đại diện:</dt>
+                            <dd>
+                                <img src="@Url.Content(Model.Recipe.ImageUrl)" alt="Ảnh công thức" class="recipe-thumbnail-confirm" />
+                            </dd>
+                        </div>
+                    }
+                </dl>
+            </div>
 
-            <dt class="col-sm-3">Ngày đăng:</dt>
-            <dd class="col-sm-9">@Model.Recipe.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
-
-            @if (!string.IsNullOrEmpty(Model.Recipe.ImageUrl))
-            {
-                <dt class="col-sm-3">Ảnh đại diện:</dt>
-                <dd class="col-sm-9">
-                    <img src="@Url.Content(Model.Recipe.ImageUrl)" alt="Ảnh công thức" style="max-width: 200px; max-height: 200px;" />
-                </dd>
-            }
-        </dl>
-
-        <form method="post">
-            <input type="hidden" asp-for="Recipe.Id" />
-            <button type="submit" class="btn btn-danger">Xác Nhận Xóa</button> |
-            <a asp-page="./Details" asp-route-id="@Model.Recipe.Id" class="btn btn-secondary">Hủy</a>
-        </form>
-    </div>
-}
+            <form method="post" class="delete-actions">
+                <input type="hidden" asp-for="Recipe.Id" />
+                <a asp-page="./Details" asp-route-id="@Model.Recipe.Id" class="btn btn-custom-cancel">Huỷ</a>
+                <button type="submit" class="btn btn-custom-confirm-delete">Xoá</button>
+            </form>
+        </div>
+    }
+</div>

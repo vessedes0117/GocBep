@@ -1,29 +1,32 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@* File: Pages/Shared/_LoginPartial.cshtml *@
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
-    {
+@if (SignInManager.IsSignedIn(User))
+{
+    <ul class="navbar-nav d-flex align-items-center flex-row">
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-page="/Recipes/Create" title="Đăng công thức mới">Đăng Công Thức</a>
+            @* "Xin chào" text now links to Profile/Index and uses nav-link-figma-username *@
+            <a class="nav-link-figma-username" asp-page="/Profile/Index" title="Trang Cá Nhân">Xin chào @UserManager.GetUserName(User)!</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-page="/Profile/Index" title="Trang Cá Nhân">Xin chào @User.Identity?.Name!</a>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Đăng xuất</button>
+        <li class="nav-item ms-3">
+            @* Added ms-3 for margin to the left of the logout button li *@
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post">
+                <button type="submit" class="nav-link-figma-logout btn btn-link">Đăng xuất</button>
             </form>
         </li>
-    }
-    else
-    {
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav d-flex align-items-center flex-row">
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
+            <a class="btn-figma-login" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
+        <li class="nav-item ms-2">
+            @* ms-2 for margin between login and register buttons *@
+            <a class="btn-figma-register" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
         </li>
-    }
-</ul>
+    </ul>
+}

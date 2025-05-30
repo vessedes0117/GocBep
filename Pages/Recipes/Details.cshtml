@@ -5,181 +5,170 @@
 @inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = Model.Recipe?.Name ?? "Chi Tiết Công Thức";
+    var logoUrl = Url.Content("~/figma-assets/icons/logo-gocbep.svg");
+    var arrowLeftIconUrl = Url.Content("~/figma-assets/icons/arrow-left.svg");
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="recipe-details-section">
+    <div class="container">
+        <div class="recipe-details-grid">
 
-@if (Model.Recipe == null)
-{
-    <p class="alert alert-warning">Không tìm thấy công thức bạn yêu cầu.</p>
-}
-else
-{
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-8">
-                @{
-                    var imageUrl = !string.IsNullOrEmpty(Model.Recipe.ImageUrl) ? Url.Content(Model.Recipe.ImageUrl) : Url.Content("~/images/placeholder/default-recipe-image.png");
-                }
-                <img src="@imageUrl" alt="@Model.Recipe.Name" class="img-fluid rounded mb-3" style="max-height: 400px; width:100%; object-fit:cover;" />
-
-                <h2 class="mb-3">@Model.Recipe.Name</h2>
-
-                <p class="text-muted">
-                    Đăng bởi: <strong>@(Model.Recipe.User?.UserName ?? "N/A")</strong> |
-                    Ngày đăng: @Model.Recipe.CreatedAt.ToString("dd/MM/yyyy") |
-                    Đánh giá: @Model.Recipe.AverageRating.ToString("0.0") <i class="fas fa-star text-warning"></i> (@(Model.Recipe.Ratings?.Count ?? 0) lượt)
-                </p>
-
-                @if (!string.IsNullOrEmpty(Model.Recipe.Description))
-                {
-                    <div class="recipe-section">
-                        <h4>Mô tả</h4>
-                        <p>@Html.Raw(Model.Recipe.Description.Replace("\n", "<br />"))</p>
+            <div class="recipe-main-column">
+                <div class="recipe-card-content">
+                    <div class="mb-4">
+                        <a asp-page="/Index" class="btn btn-outline-secondary btn-figma-back">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            <span>Quay về trang chủ</span>
+                        </a>
                     </div>
-                }
 
-                <div class="recipe-section mt-4">
-                    <h4><i class="fas fa-carrot"></i> Nguyên liệu</h4>
+                    <h1 class="recipe-title-large">@Model.Recipe.Name</h1>
+
+                    <div class="recipe-meta-info my-3">
+                        <span class="me-3">
+                            <i class="fas fa-user-edit text-muted me-1"></i> Đăng bởi:
+                            <a asp-page="/Profile/PublicView" asp-route-username="@Model.Recipe.User?.UserName" class="text-primary-custom">@Model.Recipe.User?.UserName</a>
+                        </span>
+                        <span class="me-3">
+                            <i class="far fa-calendar-alt text-muted me-1"></i> Ngày đăng: @Model.Recipe.CreatedAt.ToString("dd/MM/yyyy")
+                        </span>
+                        <span>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="fas fa-star @(i <= Model.Recipe.AverageRating ? "text-warning-custom" : "text-gray-300-custom")"></i>
+                            }
+                            <span class="rating-score-text ms-1">@Model.Recipe.AverageRating.ToString("0.0")</span>
+                            <span class="rating-count-text ms-1">(@(Model.Recipe.Ratings?.Count ?? 0) lượt)</span>
+                        </span>
+                    </div>
+
+                    <hr class="my-4 styled-hr">
+
+                    @{
+                        var imageUrl = !string.IsNullOrEmpty(Model.Recipe.ImageUrl) ? Url.Content(Model.Recipe.ImageUrl) : Url.Content("~/images/placeholder/default-recipe-image.png");
+                    }
+                    <img src="@imageUrl" alt="@Model.Recipe.Name" class="recipe-image-main img-fluid rounded mb-4" />
+
+                    @if (!string.IsNullOrEmpty(Model.Recipe.Description))
+                    {
+                        <section class="recipe-content-section mb-4">
+                            <h4 class="recipe-section-title"><i class="fas fa-file-alt me-2"></i>Mô tả</h4>
+                            <p class="recipe-text-content">@Html.Raw(Model.Recipe.Description.Replace("\n", "<br />"))</p>
+                        </section>
+                    }
+
                     @if (!string.IsNullOrEmpty(Model.Recipe.Ingredients))
                     {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var item in Model.Recipe.Ingredients.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
-                            {
-                                <li class="list-group-item">@item</li>
-                            }
-                        </ul>
+                        <section class="recipe-content-section mb-4">
+                            <h4 class="recipe-section-title"><i class="fas fa-shopping-basket me-2"></i>Nguyên liệu</h4>
+                            <ul class="ingredient-list list-unstyled">
+                                @foreach (var item in Model.Recipe.Ingredients.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    <li class="ingredient-item"><i class="fas fa-check text-success-custom me-2"></i>@item</li>
+                                }
+                            </ul>
+                        </section>
                     }
-                    else
-                    {
-                        <p>Chưa có thông tin nguyên liệu.</p>
-                    }
-                </div>
 
-                <div class="recipe-section mt-4">
-                    <h4><i class="fas fa-utensils"></i> Hướng dẫn thực hiện</h4>
                     @if (!string.IsNullOrEmpty(Model.Recipe.Instructions))
                     {
-                        <div class="instructions">
-                            @Html.Raw(Model.Recipe.Instructions.Replace("\n", "<br />"))
+                        <section class="recipe-content-section mb-4">
+                            <h4 class="recipe-section-title"><i class="fas fa-list-ol me-2"></i>Hướng dẫn thực hiện</h4>
+                            <ol class="instruction-list">
+                                @foreach (var step in Model.Recipe.Instructions.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    <li class="instruction-item">@step</li>
+                                }
+                            </ol>
+                        </section>
+                    }
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && Model.Recipe.UserId == (await UserManager.GetUserAsync(User))?.Id)
+                    {
+                        <div class="mt-4 recipe-actions">
+                            <a asp-page="./Edit" asp-route-id="@Model.Recipe.Id" class="btn btn-warning-custom me-2">
+                                <i class="fas fa-edit me-1"></i> Sửa Công Thức
+                            </a>
+                            <a asp-page="./Delete" asp-route-id="@Model.Recipe.Id" class="btn btn-danger-custom">
+                                <i class="fas fa-trash-alt me-1"></i> Xóa Công Thức
+                            </a>
                         </div>
                     }
-                    else
-                    {
-                        <p>Chưa có thông tin hướng dẫn.</p>
-                    }
+
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">Thông tin thêm</div>
-                    <ul class="list-group list-group-flush">
+            <div class="recipe-sidebar-column">
+                <div class="recipe-card-content mb-4">
+                    <h5 class="sidebar-section-title"><i class="fas fa-info-circle me-2"></i>Thông tin thêm</h5>
+                    <ul class="list-unstyled additional-info-list">
                         @if (Model.Recipe.PrepTime.HasValue)
                         {
-                            <li class="list-group-item"><strong><i class="far fa-clock"></i> Thời gian chuẩn bị:</strong> @Model.Recipe.PrepTime phút</li>
+                            <li><i class="far fa-clock me-2 text-muted"></i><strong>Thời gian chuẩn bị:</strong> @Model.Recipe.PrepTime phút</li>
                         }
                         @if (Model.Recipe.CookTime.HasValue)
                         {
-                            <li class="list-group-item"><strong><i class="fas fa-fire"></i> Thời gian nấu:</strong> @Model.Recipe.CookTime phút</li>
+                            <li><i class="fas fa-fire me-2 text-muted"></i><strong>Thời gian nấu:</strong> @Model.Recipe.CookTime phút</li>
                         }
                         @if (Model.Recipe.Servings.HasValue)
                         {
-                            <li class="list-group-item"><strong><i class="fas fa-users"></i> Khẩu phần:</strong> @Model.Recipe.Servings người</li>
+                            <li><i class="fas fa-users me-2 text-muted"></i><strong>Khẩu phần:</strong> @Model.Recipe.Servings người</li>
                         }
                     </ul>
                 </div>
 
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <div class="card mt-4">
-                        <div class="card-header">
-                            Đánh giá của bạn
-                        </div>
-                        <div class="card-body">
-                            <form method="post" asp-page-handler="Rate" asp-route-id="@Model.Recipe.Id">
-                                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
-
-                                <div class="mb-3">
-                                    <label for="ratingScoreInput" class="form-label">Chọn số sao:</label>
-                                    <div id="ratingScoreInput" class="star-rating">
-                                        @for (int i = 5; i >= 1; i--)
-                                        {
-                                            <input type="radio" id="star@(i)" asp-for="RatingScore" value="@i" class="form-check-input visually-hidden" />
-                                            <label for="star@(i)" title="@(i) sao"><i class="fas fa-star"></i></label>
-                                        }
-                                    </div>
-                                    <span asp-validation-for="RatingScore" class="text-danger d-block mt-1"></span>
+                <div class="recipe-card-content">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <h5 class="sidebar-section-title mb-3"><i class="fas fa-star me-2"></i>Đánh giá của bạn</h5>
+                        <form method="post" asp-page-handler="Rate" asp-route-id="@Model.Recipe.Id" class="mb-4">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                            <div class="mb-2">
+                                <label for="ratingScoreInput" class="form-label visually-hidden">Chọn số sao:</label>
+                                <div id="ratingScoreInput" class="star-rating-sidebar">
+                                    @for (int i = 5; i >= 1; i--)
+                                    {
+                                        <input type="radio" id="starSidebar@(i)" asp-for="RatingScore" value="@i" class="form-check-input visually-hidden" />
+                                        <label for="starSidebar@(i)" title="@(i) sao"><i class="fas fa-star"></i></label>
+                                    }
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-sm">Gửi Đánh Giá</button>
-                            </form>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="alert alert-info mt-4">
-                        Vui lòng <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page(null, new { id = Model.Recipe.Id })">đăng nhập</a> để đánh giá công thức này.
-                    </div>
-                }
+                                <span asp-validation-for="RatingScore" class="text-danger d-block mt-1"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom btn-sm w-100">Gửi Đánh Giá</button>
+                        </form>
 
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <div class="mt-4">
-                        <form method="post" asp-page-handler="ToggleFavorite" asp-route-id="@Model.Recipe.Id" class="d-inline">
+                        <h5 class="sidebar-section-title mb-3"><i class="fas fa-heartbeat me-2"></i>Yêu thích</h5>
+                        <form method="post" asp-page-handler="ToggleFavorite" asp-route-id="@Model.Recipe.Id">
                             @if (Model.IsFavoritedByCurrentUser)
                             {
-                                <button type="submit" class="btn btn-danger btn-sm" title="Bỏ yêu thích công thức này">
-                                    <i class="fas fa-heart"></i> Đã Yêu Thích
+                                <button type="submit" class="btn btn-danger-custom w-100" title="Bỏ yêu thích công thức này">
+                                    <i class="fas fa-heart me-1"></i> Đã Yêu Thích
                                 </button>
                             }
                             else
                             {
-                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Yêu thích công thức này">
-                                    <i class="far fa-heart"></i> Yêu Thích
+                                <button type="submit" class="btn btn-outline-danger-custom w-100" title="Yêu thích công thức này">
+                                    <i class="far fa-heart me-1"></i> Yêu Thích
                                 </button>
                             }
                         </form>
-                    </div>
-                }
+                    }
+                    else
+                    {
+                        <div class="rating-prompt-card text-center">
+                            <i class="fas fa-star fa-2x mb-2 text-warning-custom"></i>
+                            <p class="mb-2">Vui lòng đăng nhập để đánh giá công thức này.</p>
+                            <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page(null, new { id = Model.Recipe.Id })" class="btn btn-primary-custom">Đăng nhập</a>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-
-        <hr />
-        <div class="mt-3">
-            <a asp-page="/Index" class="btn btn-secondary">Quay lại Trang Chủ</a>
-            @if (User.Identity != null && User.Identity.IsAuthenticated && Model.Recipe.UserId == (await UserManager.GetUserAsync(User))?.Id)
-            {
-                <a asp-page="./Edit" asp-route-id="@Model.Recipe.Id" class="btn btn-warning ms-2">Sửa Công Thức</a>
-                <a asp-page="./Delete" asp-route-id="@Model.Recipe.Id" class="btn btn-danger ms-2">Xóa Công Thức</a>
-            }
-        </div>
     </div>
-}
+</div>
 
 @section Scripts {
-    <style>
-        .star-rating {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-            font-size: 1.5rem;
-        }
-
-            .star-rating input[type="radio"] {
-                display: none;
-            }
-
-            .star-rating label {
-                color: #ddd;
-                cursor: pointer;
-                padding: 0 0.1em;
-            }
-
-                .star-rating input[type="radio"]:checked ~ label,
-                .star-rating label:hover,
-                .star-rating label:hover ~ label {
-                    color: #ffc107;
-                }
-    </style>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

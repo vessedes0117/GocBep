@@ -1,0 +1,140 @@
+﻿@page
+@model GocBep.Pages.SearchModel
+@{
+    ViewData["Title"] = $"Kết quả tìm kiếm cho \"{Model.Query}\"";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Query))
+{
+    <p>Tìm thấy @Model.SearchResults.Count công thức phù hợp với từ khóa của bạn.</p>
+
+    @if (Model.SearchResults.Any())
+    {
+        <div class="row">
+            @foreach (var recipe in Model.SearchResults)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <!-- Adjust columns for responsiveness: e.g., 3 per row on large, 2 on medium -->
+                    <div class="card h-100 recipe-card">
+                        <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id">
+                            <img src="@(string.IsNullOrEmpty(recipe.ImageUrl) ? "/images/placeholder/default-recipe-image.png" : recipe.ImageUrl)"
+                                 class="card-img-top recipe-card-img" alt="@recipe.Name">
+                        </a>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="text-decoration-none stretched-link">@recipe.Name</a>
+                            </h5>
+
+                            @if (!string.IsNullOrEmpty(recipe.Description))
+                            {
+                                <p class="card-text recipe-description flex-grow-1">
+                                    @if (recipe.Description.Length > 90) // Truncate description
+                                    {
+                                        @(recipe.Description.Substring(0, 90) + "...")
+                                    }
+                                    else
+                                    {
+                                        @recipe.Description
+                                    }
+                                </p>
+                            }
+
+                            <div class="recipe-rating mb-2">
+                                @{
+                                    var avgRating = recipe.AverageRating;
+                                    var fullStars = (int)avgRating;
+                                    var halfStar = (avgRating - fullStars) >= 0.4; // Threshold for half star
+                                    var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                                }
+                                @for (int i = 0; i < fullStars; i++)
+                                {
+                                    <span class="fas fa-star text-warning"></span> <!-- Assuming FontAwesome 5+ -->
+                                }
+                                @if (halfStar)
+                                {
+                                    <span class="fas fa-star-half-alt text-warning"></span>
+                                }
+                                @for (int i = 0; i < emptyStars; i++)
+                                {
+                                    <span class="far fa-star text-warning"></span>
+                                }
+                                <span class="ms-1">
+                                    @recipe.AverageRating.ToString("0.0") (@(recipe.Ratings?.Count ?? 0) lượt)
+                                </span>
+                            </div>
+
+                            <div class="mt-auto">
+                                <p class="card-text mb-1"><small class="text-muted">Đăng bởi: @(recipe.User?.UserName ?? "N/A")</small></p>
+                                <p class="card-text mb-2"><small class="text-muted">Ngày đăng: @recipe.CreatedAt.ToString("dd/MM/yyyy")</small></p>
+                                <!-- The stretched-link on the title makes the whole card clickable,
+                                     so an explicit "Xem chi tiết" button might be redundant or styled differently if kept.
+                                     If you want a separate button, remove stretched-link from title's <a> tag. -->
+                                <!-- <a asp-page="/Recipes/Details" asp-route-id="@recipe.Id" class="btn btn-sm btn-outline-primary w-100">Xem chi tiết</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Không tìm thấy công thức nào phù hợp với từ khóa "@Model.Query".</p>
+    }
+}
+else
+{
+    <p>Vui lòng nhập từ khóa để tìm kiếm.</p>
+}
+
+@section Styles {
+    <!-- Ensure FontAwesome is linked if not already in _Layout.cshtml
+         (Needed for fas fa-star, far fa-star, fas fa-star-half-alt)
+         If you use Bootstrap Icons or another icon set, adjust star classes accordingly.
+    -->
+    <!-- Example for FontAwesome:
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    -->
+    <style>
+        .recipe-card-img {
+            height: 220px; /* Adjust this height to match your homepage card images */
+            object-fit: cover; /* Ensures the image covers the area, cropping if necessary, without distortion */
+            width: 100%;
+        }
+
+        .recipe-card .card-title a {
+            color: #333; /* Or your theme's primary text color */
+            font-weight: bold;
+        }
+
+            .recipe-card .card-title a:hover {
+                color: #007bff; /* Or your theme's link hover color */
+            }
+
+        .recipe-description {
+            font-size: 0.875rem; /* Slightly smaller text for description */
+            color: #6c757d; /* Muted text color */
+            /* To ensure consistent card height, you might set a fixed min-height or use line-clamping for description */
+            min-height: 5.25em; /* Approx 3 lines of text, adjust as needed */
+            overflow: hidden;
+        }
+
+        /* Ensure card takes full height if in a row with varying content heights */
+        .recipe-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .recipe-card .card-body {
+                flex-grow: 1; /* Allows card body to expand */
+                display: flex;
+                flex-direction: column;
+            }
+
+                .recipe-card .card-body .mt-auto {
+                    margin-top: auto; /* Pushes the footer content (author, date) to the bottom */
+                }
+    </style>
+}

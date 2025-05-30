@@ -1,0 +1,2857 @@
+# TỔNG HỢP MÃ NGUỒN DỰ ÁN
+# ==================================================
+# Đường dẫn: D:\Hoctap\WEB\GOCBEP_V2\GocBep
+# Công nghệ phát hiện: csharp, javascript
+# ==================================================
+
+## CẤU TRÚC THƯ MỤC
+```
+GocBep/
+├── .git/
+├── .github/
+├── .vs/
+├── Areas/
+│   └── Identity/
+│       └── Pages/
+│           ├── Account/
+│           │   ├── Login.cshtml
+│           │   ├── Login.cshtml.cs
+│           │   ├── Register.cshtml
+│           │   ├── Register.cshtml.cs
+│           │   └── _ViewImports.cshtml
+│           ├── _ValidationScriptsPartial.cshtml
+│           ├── _ViewImports.cshtml
+│           └── _ViewStart.cshtml
+├── Data/
+│   ├── ApplicationDbContext.cs
+│   └── SeedData.cs
+├── Migrations/
+│   ├── 20250521110813_InitialCreate.Designer.cs
+│   ├── 20250521110813_InitialCreate.cs
+│   └── ApplicationDbContextModelSnapshot.cs
+├── Models/
+│   ├── Rating.cs
+│   ├── Recipe.cs
+│   └── UserFavoriteRecipe.cs
+├── Pages/
+│   ├── Profile/
+│   │   ├── Index.cshtml
+│   │   └── Index.cshtml.cs
+│   ├── Recipes/
+│   │   ├── Create.cshtml
+│   │   ├── Create.cshtml.cs
+│   │   ├── Delete.cshtml
+│   │   ├── Delete.cshtml.cs
+│   │   ├── Details.cshtml
+│   │   ├── Details.cshtml.cs
+│   │   ├── Edit.cshtml
+│   │   ├── Edit.cshtml.cs
+│   │   ├── Index.cshtml
+│   │   └── Index.cshtml.cs
+│   ├── Shared/
+│   │   ├── _AuthLayout.cshtml
+│   │   ├── _Layout.cshtml
+│   │   ├── _Layout.cshtml.css
+│   │   ├── _LoginPartial.cshtml
+│   │   └── _ValidationScriptsPartial.cshtml
+│   ├── Error.cshtml
+│   ├── Error.cshtml.cs
+│   ├── Index.cshtml
+│   ├── Index.cshtml.cs
+│   ├── Privacy.cshtml
+│   ├── Privacy.cshtml.cs
+│   ├── Search.cshtml
+│   ├── Search.cshtml.cs
+│   ├── _ViewImports.cshtml
+│   └── _ViewStart.cshtml
+├── Properties/
+│   ├── launchSettings.json
+│   ├── serviceDependencies.json
+│   ├── serviceDependencies.local.json
+│   └── serviceDependencies.local.json.user
+├── bin/
+├── obj/
+├── wwwroot/
+│   ├── css/
+│   │   └── site.css
+│   ├── figma-assets/
+│   │   ├── icons/
+│   │   │   ├── Icon-left3.svg
+│   │   │   ├── avatar1.svg
+│   │   │   ├── devider0.svg
+│   │   │   ├── icon-left0.svg
+│   │   │   ├── icon-left1.svg
+│   │   │   └── icon-left2.svg
+│   │   ├── images/
+│   │   │   ├── auth-hero-poster.jpg
+│   │   │   ├── elements0.png
+│   │   │   ├── elements1.png
+│   │   │   └── screen-shot-2025-05-26-at-16-42-21-10.png
+│   │   └── videos/
+│   │       └── auth-hero-video.mp4
+│   ├── images/
+│   │   ├── placeholder/
+│   │   │   ├── canh_chua_ca_loc.jpg
+│   │   │   ├── default-recipe-image.png
+│   │   │   ├── ga_nuong_mat_ong.jpg
+│   │   │   └── suon_xao_chua_ngot.jpg
+│   │   └── recipes/
+│   │       └── 398e6923-0c78-4326-a79f-7fab568569ce_canh_chua_ca_loc.jpg
+│   ├── js/
+│   │   └── site.js
+│   ├── lib/
+│   └── favicon.ico
+├── .gitignore
+├── GocBep.csproj
+├── GocBep.csproj.user
+├── GocBep.sln
+├── Program.cs
+├── ScaffoldingReadMe.txt
+├── appsettings.Development.json
+├── appsettings.json
+├── gocbep.db
+├── gocbep.db-shm
+├── gocbep.db-wal
+└── source_dump.txt
+```
+
+## NỘI DUNG CÁC FILE
+
+### Program.cs
+```cs
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using GocBep.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequiredUniqueChars = 1;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseMigrationsEndPoint();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        await SeedData.Initialize(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
+}
+
+app.Run();
+```
+
+### Areas\Identity\Pages\Account\Login.cshtml.cs
+```cs
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+#nullable disable
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+
+namespace GocBep.Areas.Identity.Pages.Account
+{
+    public class LoginModel : PageModel
+    {
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ILogger<LoginModel> _logger;
+
+        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        {
+            _signInManager = signInManager;
+            _logger = logger;
+        }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public string ReturnUrl { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        [TempData]
+        public string ErrorMessage { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public class InputModel
+        {
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; }
+
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Display(Name = "Remember me?")]
+            public bool RememberMe { get; set; }
+        }
+
+        public async Task OnGetAsync(string returnUrl = null)
+        {
+            if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                ModelState.AddModelError(string.Empty, ErrorMessage);
+            }
+
+            returnUrl ??= Url.Content("~/");
+
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            ReturnUrl = returnUrl;
+        }
+
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (ModelState.IsValid)
+            {
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User logged in.");
+                    return LocalRedirect(returnUrl);
+                }
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToPage("./Lockout");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return Page();
+        }
+    }
+}
+
+```
+
+### Areas\Identity\Pages\Account\Register.cshtml.cs
+```cs
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+#nullable disable
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
+
+namespace GocBep.Areas.Identity.Pages.Account
+{
+    public class RegisterModel : PageModel
+    {
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserStore<IdentityUser> _userStore;
+        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly ILogger<RegisterModel> _logger;
+        private readonly IEmailSender _emailSender;
+
+        public RegisterModel(
+            UserManager<IdentityUser> userManager,
+            IUserStore<IdentityUser> userStore,
+            SignInManager<IdentityUser> signInManager,
+            ILogger<RegisterModel> logger,
+            IEmailSender emailSender)
+        {
+            _userManager = userManager;
+            _userStore = userStore;
+            _emailStore = GetEmailStore();
+            _signInManager = signInManager;
+            _logger = logger;
+            _emailSender = emailSender;
+        }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public string ReturnUrl { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public class InputModel
+        {
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; }
+
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; }
+        }
+
+
+        public async Task OnGetAsync(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl;
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        }
+
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            if (ModelState.IsValid)
+            {
+                var user = CreateUser();
+
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User created a new account with password.");
+
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                        protocol: Request.Scheme);
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return Page();
+        }
+
+        private IdentityUser CreateUser()
+        {
+            try
+            {
+                return Activator.CreateInstance<IdentityUser>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
+                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+        }
+
+        private IUserEmailStore<IdentityUser> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)
+            {
+                throw new NotSupportedException("The default UI requires a user store with email support.");
+            }
+            return (IUserEmailStore<IdentityUser>)_userStore;
+        }
+    }
+}
+
+```
+
+### Data\ApplicationDbContext.cs
+```cs
+﻿using GocBep.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+namespace GocBep.Data
+{
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<UserFavoriteRecipe> UserFavoriteRecipes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityUser>(b =>
+            {
+                b.Property(u => u.ConcurrencyStamp).IsConcurrencyToken();
+            });
+
+            modelBuilder.Entity<IdentityRole>(b =>
+            {
+                b.Property(r => r.ConcurrencyStamp).IsConcurrencyToken();
+            });
+
+            modelBuilder.Entity<IdentityUserLogin<string>>(b =>
+            {
+                b.Property(l => l.LoginProvider).HasMaxLength(128);
+                b.Property(l => l.ProviderKey).HasMaxLength(128);
+            });
+
+            modelBuilder.Entity<IdentityUserRole<string>>(b =>
+            {
+                b.Property(r => r.UserId).HasMaxLength(450);
+                b.Property(r => r.RoleId).HasMaxLength(450);
+            });
+
+            modelBuilder.Entity<IdentityUserToken<string>>(b =>
+            {
+                b.Property(t => t.UserId).HasMaxLength(450);
+                b.Property(t => t.LoginProvider).HasMaxLength(128);
+                b.Property(t => t.Name).HasMaxLength(128);
+            });
+
+            modelBuilder.Entity<UserFavoriteRecipe>()
+                .HasKey(ufr => new { ufr.UserId, ufr.RecipeId });
+
+            modelBuilder.Entity<Rating>()
+                .HasIndex(r => new { r.RecipeId, r.UserId })
+                .IsUnique();
+
+            modelBuilder.Entity<UserFavoriteRecipe>()
+                .HasOne(ufr => ufr.User)
+                .WithMany()
+                .HasForeignKey(ufr => ufr.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserFavoriteRecipe>()
+                .HasOne(ufr => ufr.Recipe)
+                .WithMany(r => r.FavoritedByUsers)
+                .HasForeignKey(ufr => ufr.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Rating>()
+                .HasOne(r => r.Recipe)
+                .WithMany(rec => rec.Ratings)
+                .HasForeignKey(r => r.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Rating>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Recipe>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
+}
+
+```
+
+### Data\SeedData.cs
+```cs
+﻿using GocBep.Data;
+using GocBep.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
+namespace GocBep.Data
+{
+    public static class SeedData
+    {
+        public static async Task Initialize(IServiceProvider serviceProvider)
+        {
+            using (var context = new ApplicationDbContext(
+                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
+            {
+                string sampleUserId = "81a2ddca-d1d3-4692-8073-ae2922f29308";
+
+                var userExists = await context.Users.AnyAsync(u => u.Id == sampleUserId);
+                if (!userExists)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Lỗi SeedData: Không tìm thấy User ID: {sampleUserId}. Công thức mẫu sẽ không được thêm.");
+                    return;
+                }
+
+
+                if (context.Recipes.Any())
+                {
+                    return;
+                }
+
+                var recipes = new Recipe[]
+                {
+                    new Recipe
+                    {
+                        Name = "Gà Nướng Mật Ong",
+                        Description = "Món gà nướng mật ong thơm lừng, da giòn, thịt mềm, đậm đà hương vị.",
+                        Ingredients = "- 1 con gà (khoảng 1.2 - 1.5kg)\n- 3 muỗng canh mật ong\n- 2 muỗng canh nước tương\n- 1 muỗng canh dầu hào\n- 1 muỗng cà phê tỏi băm\n- 1/2 muỗng cà phê gừng băm\n- Gia vị: muối, tiêu",
+                        Instructions = "1. Sơ chế gà: Gà làm sạch, để ráo nước. Có thể khứa nhẹ vài đường trên đùi và ức gà để gia vị thấm đều.\n2. Pha sốt ướp: Trộn đều mật ong, nước tương, dầu hào, tỏi băm, gừng băm, một ít muối và tiêu.\n3. Ướp gà: Thoa đều hỗn hợp sốt lên khắp mình gà, cả bên trong lẫn bên ngoài. Ướp ít nhất 30 phút, hoặc tốt nhất là 2-4 tiếng trong tủ lạnh.\n4. Nướng gà: Làm nóng lò nướng ở 200°C. Cho gà vào khay nướng, nướng khoảng 45-60 phút tùy kích thước gà. Cứ khoảng 15-20 phút, lấy gà ra phết thêm một lớp sốt ướp để gà không bị khô và có màu đẹp.\n5. Hoàn thành: Gà chín vàng đều, da giòn là được. Lấy gà ra, để nguội bớt rồi chặt miếng vừa ăn.",
+                        ImageUrl = "/images/placeholder/ga_nuong_mat_ong.jpg",
+                        PrepTime = 20,
+                        CookTime = 60,
+                        Servings = 4,
+                        CreatedAt = DateTime.UtcNow.AddDays(-5),
+                        UserId = sampleUserId
+                    },
+                    new Recipe
+                    {
+                        Name = "Canh Chua Cá Lóc",
+                        Description = "Món canh chua cá lóc đậm đà hương vị miền Tây, chua thanh, ngọt dịu, kích thích vị giác.",
+                        Ingredients = "- 1 con cá lóc (khoảng 500-700g)\n- 1/4 trái thơm (dứa)\n- 2 trái cà chua\n- 100g đậu bắp\n- 1 vắt me nhỏ\n- Giá đỗ, rau ngổ, ngò gai\n- Tỏi, ớt, hành lá\n- Gia vị: nước mắm, đường, muối, bột ngọt",
+                        Instructions = "1. Sơ chế: Cá lóc làm sạch, cắt khoanh vừa ăn, ướp với ít nước mắm, tiêu. Thơm gọt vỏ, bỏ mắt, cắt miếng. Cà chua cắt múi cau. Đậu bắp cắt xéo. Me dầm với nước nóng, lọc lấy nước cốt.\n2. Phi thơm tỏi, xào sơ cá cho săn lại rồi gắp ra.\n3. Cho nước vào nồi, đun sôi. Cho nước cốt me, thơm, cà chua vào nấu. Nêm nếm gia vị vừa ăn (chua, ngọt, mặn hài hòa).\n4. Khi nước sôi lại, cho cá và đậu bắp vào nấu chín.\n5. Tắt bếp, cho giá đỗ, rau ngổ, ngò gai, hành lá, vài lát ớt vào. Múc canh ra tô, dùng nóng với cơm.",
+                        ImageUrl = "/images/placeholder/canh_chua_ca_loc.jpg",
+                        PrepTime = 25,
+                        CookTime = 30,
+                        Servings = 4,
+                        CreatedAt = DateTime.UtcNow.AddDays(-3),
+                        UserId = sampleUserId
+                    },
+                    new Recipe
+                    {
+                        Name = "Sườn Xào Chua Ngọt",
+                        Description = "Sườn xào chua ngọt với vị chua, ngọt, mặn hài hòa, màu sắc hấp dẫn, rất hao cơm.",
+                        Ingredients = "- 500g sườn non\n- 1 củ hành tây nhỏ\n- 1/2 trái ớt chuông xanh (hoặc đỏ/vàng)\n- Tỏi băm, hành tím băm\n- Gia vị ướp sườn: nước mắm, đường, tiêu, hạt nêm\n- Sốt chua ngọt: 3 muỗng canh đường, 3 muỗng canh giấm, 2 muỗng canh nước mắm, 1 muỗng canh tương cà, 1 muỗng canh tương ớt (tùy chọn), 1/2 chén nước lọc.",
+                        Instructions = "1. Sơ chế: Sườn non rửa sạch, chặt miếng vừa ăn. Trần sơ sườn qua nước sôi để loại bỏ tạp chất, rửa lại. Ướp sườn với gia vị trong khoảng 20-30 phút.\n2. Chiên sườn: Đun nóng dầu, cho sườn vào chiên vàng đều các mặt. Vớt sườn ra để ráo dầu.\n3. Pha sốt: Trộn đều các nguyên liệu của phần sốt chua ngọt.\n4. Xào: Phi thơm hành tỏi băm, cho hành tây, ớt chuông vào xào sơ. Cho sườn đã chiên vào đảo nhanh. Đổ hỗn hợp sốt chua ngọt vào, đảo đều cho sườn ngấm gia vị và sốt sánh lại.\n5. Hoàn thành: Nêm nếm lại cho vừa khẩu vị. Tắt bếp, gắp sườn ra đĩa.",
+                        ImageUrl = "/images/placeholder/suon_xao_chua_ngot.jpg",
+                        PrepTime = 20,
+                        CookTime = 40,
+                        Servings = 3,
+                        CreatedAt = DateTime.UtcNow.AddDays(-1),
+                        UserId = sampleUserId
+                    }
+                };
+
+                await context.Recipes.AddRangeAsync(recipes);
+                await context.SaveChangesAsync();
+            }
+        }
+    }
+}
+```
+
+### Migrations\20250521110813_InitialCreate.cs
+```cs
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace GocBep.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RoleId = table.Column<string>(type: "TEXT", nullable: false),
+                    ClaimType = table.Column<string>(type: "TEXT", nullable: true),
+                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    ClaimType = table.Column<string>(type: "TEXT", nullable: true),
+                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "TEXT", nullable: true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", maxLength: 450, nullable: false),
+                    RoleId = table.Column<string>(type: "TEXT", maxLength: 450, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", maxLength: 450, nullable: false),
+                    LoginProvider = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Value = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recipes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Ingredients = table.Column<string>(type: "TEXT", nullable: false),
+                    Instructions = table.Column<string>(type: "TEXT", nullable: false),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    PrepTime = table.Column<int>(type: "INTEGER", nullable: true),
+                    CookTime = table.Column<int>(type: "INTEGER", nullable: true),
+                    Servings = table.Column<int>(type: "INTEGER", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Recipes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Score = table.Column<int>(type: "INTEGER", nullable: false),
+                    RecipeId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ratings_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserFavoriteRecipes",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    RecipeId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserFavoriteRecipes", x => new { x.UserId, x.RecipeId });
+                    table.ForeignKey(
+                        name: "FK_UserFavoriteRecipes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserFavoriteRecipes_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_RecipeId_UserId",
+                table: "Ratings",
+                columns: new[] { "RecipeId", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_UserId",
+                table: "Ratings",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipes_UserId",
+                table: "Recipes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserFavoriteRecipes_RecipeId",
+                table: "UserFavoriteRecipes",
+                column: "RecipeId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Ratings");
+
+            migrationBuilder.DropTable(
+                name: "UserFavoriteRecipes");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Recipes");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+        }
+    }
+}
+
+```
+
+### Migrations\20250521110813_InitialCreate.Designer.cs
+```cs
+﻿// <auto-generated />
+using System;
+using GocBep.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+#nullable disable
+
+namespace GocBep.Migrations
+{
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20250521110813_InitialCreate")]
+    partial class InitialCreate
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
+
+            modelBuilder.Entity("GocBep.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("RecipeId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("Ratings");
+                });
+
+            modelBuilder.Entity("GocBep.Models.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CookTime")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ingredients")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Instructions")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("PrepTime")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Servings")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Recipes");
+                });
+
+            modelBuilder.Entity("GocBep.Models.UserFavoriteRecipe", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("UserFavoriteRecipes");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("GocBep.Models.Rating", b =>
+                {
+                    b.HasOne("GocBep.Models.Recipe", "Recipe")
+                        .WithMany("Ratings")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GocBep.Models.Recipe", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GocBep.Models.UserFavoriteRecipe", b =>
+                {
+                    b.HasOne("GocBep.Models.Recipe", "Recipe")
+                        .WithMany("FavoritedByUsers")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GocBep.Models.Recipe", b =>
+                {
+                    b.Navigation("FavoritedByUsers");
+
+                    b.Navigation("Ratings");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+```
+
+### Migrations\ApplicationDbContextModelSnapshot.cs
+```cs
+﻿// <auto-generated />
+using System;
+using GocBep.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+#nullable disable
+
+namespace GocBep.Migrations
+{
+    [DbContext(typeof(ApplicationDbContext))]
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
+
+            modelBuilder.Entity("GocBep.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("RecipeId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("Ratings");
+                });
+
+            modelBuilder.Entity("GocBep.Models.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CookTime")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ingredients")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Instructions")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("PrepTime")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Servings")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Recipes");
+                });
+
+            modelBuilder.Entity("GocBep.Models.UserFavoriteRecipe", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "RecipeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("UserFavoriteRecipes");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("GocBep.Models.Rating", b =>
+                {
+                    b.HasOne("GocBep.Models.Recipe", "Recipe")
+                        .WithMany("Ratings")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GocBep.Models.Recipe", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GocBep.Models.UserFavoriteRecipe", b =>
+                {
+                    b.HasOne("GocBep.Models.Recipe", "Recipe")
+                        .WithMany("FavoritedByUsers")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GocBep.Models.Recipe", b =>
+                {
+                    b.Navigation("FavoritedByUsers");
+
+                    b.Navigation("Ratings");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+```
+
+### Models\Rating.cs
+```cs
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
+
+namespace GocBep.Models
+{
+    public class Rating
+    {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Điểm đánh giá là bắt buộc.")]
+        [Range(1, 5, ErrorMessage = "Điểm đánh giá phải từ 1 đến 5 sao.")]
+        [Display(Name = "Số Sao")]
+        public int Score { get; set; }
+
+        // --- Mối quan hệ với Công thức (Recipe) ---
+        [Required]
+        public int RecipeId { get; set; } // Khóa ngoại
+
+        [ForeignKey("RecipeId")]
+        public virtual Recipe? Recipe { get; set; } // Thuộc tính điều hướng
+
+        // --- Mối quan hệ với Người dùng (User) ---
+        [Required]
+        public string UserId { get; set; } // Khóa ngoại
+
+        [ForeignKey("UserId")]
+        public virtual IdentityUser? User { get; set; } // Thuộc tính điều hướng
+    }
+}
+```
+
+### Models\Recipe.cs
+```cs
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
+
+namespace GocBep.Models
+{
+    public class Recipe
+    {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Tên món ăn là bắt buộc.")]
+        [StringLength(100, ErrorMessage = "Tên món ăn không được vượt quá 100 ký tự.")]
+        [Display(Name = "Tên Món Ăn")]
+        public string Name { get; set; }
+
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "Mô Tả Ngắn")]
+        public string? Description { get; set; }
+
+        [Required(ErrorMessage = "Nguyên liệu là bắt buộc.")]
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "Nguyên Liệu")]
+        public string Ingredients { get; set; }
+
+        [Required(ErrorMessage = "Hướng dẫn là bắt buộc.")]
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "Hướng Dẫn Thực Hiện")]
+        public string Instructions { get; set; }
+
+        [Display(Name = "Đường Dẫn Ảnh")]
+        public string? ImageUrl { get; set; }
+
+        [Display(Name = "Thời gian chuẩn bị (phút)")]
+        [Range(0, int.MaxValue, ErrorMessage = "Thời gian chuẩn bị phải là số không âm.")]
+        public int? PrepTime { get; set; }
+
+        [Display(Name = "Thời gian nấu (phút)")]
+        [Range(0, int.MaxValue, ErrorMessage = "Thời gian nấu phải là số không âm.")]
+        public int? CookTime { get; set; }
+
+        [Display(Name = "Khẩu Phần (người)")]
+        [Range(1, int.MaxValue, ErrorMessage = "Khẩu phần phải ít nhất là 1.")]
+        public int? Servings { get; set; }
+
+        [Display(Name = "Ngày Đăng")]
+        [DataType(DataType.DateTime)]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        public string UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual IdentityUser? User { get; set; }
+
+        public virtual ICollection<Rating>? Ratings { get; set; }
+
+        public virtual ICollection<UserFavoriteRecipe>? FavoritedByUsers { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Đánh Giá Trung Bình")]
+        public double AverageRating { get; set; }
+    }
+}
+
+```
+
+### Models\UserFavoriteRecipe.cs
+```cs
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
+
+namespace GocBep.Models
+{
+    public class UserFavoriteRecipe
+    {
+        [Required]
+        public string UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual IdentityUser? User { get; set; }
+
+        [Required]
+        public int RecipeId { get; set; }
+
+        [ForeignKey("RecipeId")]
+        public virtual Recipe? Recipe { get; set; }
+    }
+}
+
+```
+
+### Pages\Error.cshtml.cs
+```cs
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics;
+
+namespace GocBep.Pages
+{
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    [IgnoreAntiforgeryToken]
+    public class ErrorModel : PageModel
+    {
+        public string? RequestId { get; set; }
+
+        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+        private readonly ILogger<ErrorModel> _logger;
+
+        public ErrorModel(ILogger<ErrorModel> logger)
+        {
+            _logger = logger;
+        }
+
+        public void OnGet()
+        {
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+        }
+    }
+
+}
+
+```
+
+### Pages\Index.cshtml.cs
+```cs
+﻿using GocBep.Data;
+using GocBep.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace GocBep.Pages
+{
+    public class IndexModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly ILogger<IndexModel> _logger;
+
+        public IndexModel(ApplicationDbContext context, ILogger<IndexModel> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
+        public IList<Recipe> Recipes { get; set; } = new List<Recipe>();
+
+        [TempData]
+        public string? StatusMessage { get; set; }
+
+
+        public async Task OnGetAsync()
+        {
+            var recipesQuery = _context.Recipes
+                                      .Include(r => r.User)
+                                      .Include(r => r.Ratings)
+                                      .OrderByDescending(r => r.CreatedAt);
+
+            Recipes = await recipesQuery.ToListAsync();
+
+            foreach (var recipe in Recipes)
+            {
+                if (recipe.Ratings != null && recipe.Ratings.Any())
+                {
+                    recipe.AverageRating = recipe.Ratings.Average(r => r.Score);
+                }
+                else
+                {
+                    recipe.AverageRating = 0;
+                }
+            }
+
+            _logger.LogInformation("Trang chủ đã được tải với {RecipeCount} công thức.", Recipes.Count);
+        }
+    }
+}
+```
+
+### Pages\Privacy.cshtml.cs
+```cs
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace GocBep.Pages
+{
+    public class PrivacyModel : PageModel
+    {
+        private readonly ILogger<PrivacyModel> _logger;
+
+        public PrivacyModel(ILogger<PrivacyModel> logger)
+        {
+            _logger = logger;
+        }
+
+        public void OnGet()
+        {
+        }
+    }
+
+}
+
+```
+
+### Pages\Search.cshtml.cs
+```cs
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GocBep.Data;
+using GocBep.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+
+namespace GocBep.Pages
+{
+    public class SearchModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+
+        public SearchModel(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // Thuộc tính để bind với query từ URL (?query=...)
+        [BindProperty(SupportsGet = true)]
+        public string? Query { get; set; }
+
+        public IList<Recipe> SearchResults { get; set; } = new List<Recipe>();
+
+        public async Task OnGetAsync()
+        {
+            if (!string.IsNullOrWhiteSpace(Query))
+            {
+                // Tìm kiếm trong tên món ăn (không phân biệt hoa thường)
+                // và có thể mở rộng tìm trong Description nếu muốn
+                SearchResults = await _context.Recipes
+                    .Include(r => r.User) // Để hiển thị người đăng
+                    .Include(r => r.Ratings) // Để tính điểm trung bình
+                    .Where(r => r.Name.ToLower().Contains(Query.ToLower()))
+                    // Ví dụ mở rộng tìm trong mô tả:
+                    // .Where(r => r.Name.ToLower().Contains(Query.ToLower()) || 
+                    //              (r.Description != null && r.Description.ToLower().Contains(Query.ToLower())))
+                    .OrderByDescending(r => r.CreatedAt) // Hoặc sắp xếp theo mức độ liên quan (phức tạp hơn)
+                    .ToListAsync();
+
+                foreach (var recipe in SearchResults)
+                {
+                    if (recipe.Ratings != null && recipe.Ratings.Any())
+                    {
+                        recipe.AverageRating = recipe.Ratings.Average(r => r.Score);
+                    }
+                    else
+                    {
+                        recipe.AverageRating = 0;
+                    }
+                }
+            }
+            // Nếu Query rỗng hoặc null, SearchResults sẽ là danh sách rỗng
+        }
+    }
+}
+```
+
+### Pages\Profile\Index.cshtml.cs
+```cs
+using GocBep.Data;
+using GocBep.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace GocBep.Pages.Profile
+{
+    [Authorize]
+    public class IndexModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public IndexModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        public IdentityUser CurrentUser { get; set; } = default!;
+        public IList<Recipe> PostedRecipes { get; set; } = new List<Recipe>();
+        public IList<Recipe> FavoriteRecipes { get; set; } = new List<Recipe>();
+
+        public async Task<IActionResult> OnGetAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+            CurrentUser = user;
+
+            PostedRecipes = await _context.Recipes
+                                        .Where(r => r.UserId == CurrentUser.Id)
+                                        .Include(r => r.Ratings)
+                                        .OrderByDescending(r => r.CreatedAt)
+                                        .ToListAsync();
+
+            foreach (var recipe in PostedRecipes)
+            {
+                if (recipe.Ratings != null && recipe.Ratings.Any())
+                {
+                    recipe.AverageRating = recipe.Ratings.Average(r => r.Score);
+                }
+                else
+                {
+                    recipe.AverageRating = 0;
+                }
+            }
+
+            FavoriteRecipes = await _context.UserFavoriteRecipes
+                                       .Where(ufr => ufr.UserId == CurrentUser.Id)
+                                       .Include(ufr => ufr.Recipe)
+                                           .ThenInclude(r => r.User)
+                                       .Include(ufr => ufr.Recipe)
+                                           .ThenInclude(r => r.Ratings)
+                                       .Select(ufr => ufr.Recipe)
+                                       .OrderByDescending(r => r.CreatedAt)
+                                       .ToListAsync();
+
+            foreach (var recipe in FavoriteRecipes)
+            {
+                if (recipe != null)
+                {
+                    if (recipe.Ratings != null && recipe.Ratings.Any())
+                    {
+                        recipe.AverageRating = recipe.Ratings.Average(r => r.Score);
+                    }
+                    else
+                    {
+                        recipe.AverageRating = 0;
+                    }
+                }
+            }
+
+            return Page();
+        }
+    }
+}
+```
+
+### Pages\Recipes\Create.cshtml.cs
+```cs
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using GocBep.Data;
+using GocBep.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+
+namespace GocBep.Pages.Recipes
+{
+    [Authorize]
+    public class CreateModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public CreateModel(ApplicationDbContext context,
+                           UserManager<IdentityUser> userManager,
+                           IWebHostEnvironment webHostEnvironment)
+        {
+            _context = context;
+            _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
+        }
+
+        [BindProperty]
+        public Recipe Recipe { get; set; } = default!;
+
+        [BindProperty]
+        public IFormFile? UploadedImage { get; set; }
+
+        public IActionResult OnGet()
+        {
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            ModelState.Remove("Recipe.User");
+            ModelState.Remove("Recipe.Ratings");
+            ModelState.Remove("Recipe.FavoritedByUsers");
+            ModelState.Remove("Recipe.UserId");
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+            Recipe.UserId = user.Id;
+            Recipe.CreatedAt = DateTime.UtcNow;
+
+            if (UploadedImage != null && UploadedImage.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(UploadedImage.FileName);
+
+                var uploadsFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "recipes");
+                if (!Directory.Exists(uploadsFolderPath))
+                {
+                    Directory.CreateDirectory(uploadsFolderPath);
+                }
+
+                var filePath = Path.Combine(uploadsFolderPath, fileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await UploadedImage.CopyToAsync(fileStream);
+                }
+                Recipe.ImageUrl = "/images/recipes/" + fileName;
+            }
+            else
+            {
+            }
+
+
+            _context.Recipes.Add(Recipe);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Công thức đã được thêm thành công!";
+            return RedirectToPage("./Details", new { id = Recipe.Id });
+        }
+    }
+}
+```
+
+### Pages\Recipes\Delete.cshtml.cs
+```cs
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using GocBep.Data;
+using GocBep.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+
+namespace GocBep.Pages.Recipes
+{
+    [Authorize]
+    public class DeleteModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public DeleteModel(ApplicationDbContext context,
+                           UserManager<IdentityUser> userManager,
+                           IWebHostEnvironment webHostEnvironment)
+        {
+            _context = context;
+            _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
+        }
+
+        [BindProperty]
+        public Recipe Recipe { get; set; } = default!;
+
+        public string? ErrorMessage { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var recipe = await _context.Recipes
+                                       .Include(r => r.User)
+                                       .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (recipe.UserId != currentUser?.Id)
+            {
+                ErrorMessage = "Bạn không có quyền xóa công thức này.";
+                return Page();
+            }
+
+            Recipe = recipe;
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var recipeToDelete = await _context.Recipes
+                                             .Include(r => r.User)
+                                             .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (recipeToDelete == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (recipeToDelete.UserId != currentUser?.Id)
+            {
+                Recipe = recipeToDelete;
+                ErrorMessage = "Bạn không có quyền xóa công thức này.";
+                return Page();
+            }
+
+            if (!string.IsNullOrEmpty(recipeToDelete.ImageUrl) &&
+                !recipeToDelete.ImageUrl.Contains("placeholder"))
+            {
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, recipeToDelete.ImageUrl.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(imagePath);
+                    }
+                    catch (IOException ex)
+                    {
+                        TempData["WarningMessage"] = $"Công thức đã được xóa, nhưng có lỗi khi xóa file ảnh: {ex.Message}";
+                    }
+                }
+            }
+
+
+            _context.Recipes.Remove(recipeToDelete);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Công thức đã được xóa thành công!";
+            return RedirectToPage("/Index");
+        }
+    }
+}
+```
+
+### Pages\Recipes\Details.cshtml.cs
+```cs
+﻿using GocBep.Data;
+using GocBep.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+
+namespace GocBep.Pages.Recipes
+{
+    public class DetailsModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public DetailsModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        public Recipe Recipe { get; set; } = default!;
+
+        [BindProperty]
+        public int RatingScore { get; set; }
+
+        public bool IsFavoritedByCurrentUser { get; set; }
+
+        private async Task LoadRecipeAndRelatedData(int recipeId)
+        {
+            Recipe = await _context.Recipes
+                                   .Include(r => r.User)
+                                   .Include(r => r.Ratings)
+                                   // .Include(r => r.FavoritedByUsers) // Có thể không cần nếu truy vấn riêng
+                                   .FirstOrDefaultAsync(m => m.Id == recipeId);
+
+            if (Recipe != null)
+            {
+                if (Recipe.Ratings != null && Recipe.Ratings.Any())
+                {
+                    Recipe.AverageRating = Recipe.Ratings.Average(r => r.Score);
+                }
+                else
+                {
+                    Recipe.AverageRating = 0;
+                }
+
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser != null)
+                {
+                    IsFavoritedByCurrentUser = await _context.UserFavoriteRecipes
+                                                         .AnyAsync(ufr => ufr.RecipeId == Recipe.Id && ufr.UserId == currentUser.Id);
+                }
+                else
+                {
+                    IsFavoritedByCurrentUser = false;
+                }
+            }
+        }
+
+        public async Task<IActionResult> OnGetAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            await LoadRecipeAndRelatedData(id.Value);
+
+            if (Recipe == null)
+            {
+                return NotFound();
+            }
+
+            return Page();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> OnPostRateAsync(int id)
+        {
+            if (RatingScore < 1 || RatingScore > 5)
+            {
+                ModelState.AddModelError(nameof(RatingScore), "Điểm đánh giá phải từ 1 đến 5 sao.");
+            }
+
+            await LoadRecipeAndRelatedData(id);
+            if (Recipe == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+
+            var existingRating = await _context.Ratings
+                                               .FirstOrDefaultAsync(r => r.RecipeId == id && r.UserId == currentUser.Id);
+
+            if (existingRating != null)
+            {
+                existingRating.Score = RatingScore;
+                _context.Ratings.Update(existingRating);
+                TempData["SuccessMessage"] = "Đánh giá của bạn đã được cập nhật!";
+            }
+            else
+            {
+                var newRating = new Rating
+                {
+                    RecipeId = id,
+                    UserId = currentUser.Id,
+                    Score = RatingScore,
+                };
+                _context.Ratings.Add(newRating);
+                TempData["SuccessMessage"] = "Cảm ơn bạn đã đánh giá công thức này!";
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage(new { id = id });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> OnPostToggleFavoriteAsync(int id)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+
+            var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            var existingFavorite = await _context.UserFavoriteRecipes
+                                                 .FirstOrDefaultAsync(ufr => ufr.RecipeId == id && ufr.UserId == currentUser.Id);
+
+            if (existingFavorite != null)
+            {
+                _context.UserFavoriteRecipes.Remove(existingFavorite);
+                TempData["SuccessMessage"] = $"Đã bỏ yêu thích công thức '{recipe.Name}'.";
+            }
+            else
+            {
+                var newFavorite = new UserFavoriteRecipe
+                {
+                    RecipeId = id,
+                    UserId = currentUser.Id
+                };
+                _context.UserFavoriteRecipes.Add(newFavorite);
+                TempData["SuccessMessage"] = $"Đã thêm công thức '{recipe.Name}' vào danh sách yêu thích!";
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage(new { id = id });
+        }
+    }
+}
+```
+
+### Pages\Recipes\Edit.cshtml.cs
+```cs
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using GocBep.Data;
+using GocBep.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+
+namespace GocBep.Pages.Recipes
+{
+    [Authorize]
+    public class EditModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public EditModel(ApplicationDbContext context,
+                         UserManager<IdentityUser> userManager,
+                         IWebHostEnvironment webHostEnvironment)
+        {
+            _context = context;
+            _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
+        }
+
+        [BindProperty]
+        public Recipe Recipe { get; set; } = default!;
+
+        [BindProperty]
+        public IFormFile? UploadedImage { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var recipe = await _context.Recipes
+                                       .Include(r => r.User)
+                                       .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (recipe.UserId != currentUser?.Id)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền sửa công thức này.";
+                return RedirectToPage("./Details", new { id = recipe.Id });
+            }
+
+            Recipe = recipe;
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int id)
+        {
+            var recipeToUpdate = await _context.Recipes
+                                             .Include(r => r.User)
+                                             .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (recipeToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (recipeToUpdate.UserId != currentUser?.Id)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền sửa công thức này.";
+                return RedirectToPage("./Details", new { id = recipeToUpdate.Id });
+            }
+
+            ModelState.Remove("Recipe.User");
+            ModelState.Remove("Recipe.Ratings");
+            ModelState.Remove("Recipe.FavoritedByUsers");
+            ModelState.Remove("Recipe.UserId");
+            ModelState.Remove("Recipe.CreatedAt");
+
+
+            if (await TryUpdateModelAsync<Recipe>(
+                recipeToUpdate,
+                "Recipe",
+                r => r.Name, r => r.Description, r => r.Ingredients, r => r.Instructions,
+                r => r.PrepTime, r => r.CookTime, r => r.Servings))
+            {
+                if (UploadedImage != null && UploadedImage.Length > 0)
+                {
+                    if (!string.IsNullOrEmpty(recipeToUpdate.ImageUrl) &&
+                        !recipeToUpdate.ImageUrl.Contains("placeholder"))
+                    {
+                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, recipeToUpdate.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    var fileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(UploadedImage.FileName);
+                    var uploadsFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "recipes");
+                    if (!Directory.Exists(uploadsFolderPath))
+                    {
+                        Directory.CreateDirectory(uploadsFolderPath);
+                    }
+                    var newFilePath = Path.Combine(uploadsFolderPath, fileName);
+
+                    using (var fileStream = new FileStream(newFilePath, FileMode.Create))
+                    {
+                        await UploadedImage.CopyToAsync(fileStream);
+                    }
+                    recipeToUpdate.ImageUrl = "/images/recipes/" + fileName;
+                }
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Công thức đã được cập nhật thành công!";
+                    return RedirectToPage("./Details", new { id = recipeToUpdate.Id });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RecipeExists(recipeToUpdate.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return Page();
+        }
+
+        private bool RecipeExists(int id)
+        {
+            return _context.Recipes.Any(e => e.Id == id);
+        }
+    }
+}
+```
+
+### Pages\Recipes\Index.cshtml.cs
+```cs
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using GocBep.Data;
+using GocBep.Models;
+
+namespace GocBep.Pages.Recipes
+{
+    public class IndexModel : PageModel
+    {
+        private readonly GocBep.Data.ApplicationDbContext _context;
+
+        public IndexModel(GocBep.Data.ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public IList<Recipe> Recipe { get;set; } = default!;
+
+        public async Task OnGetAsync()
+        {
+            Recipe = await _context.Recipes
+                .Include(r => r.User).ToListAsync();
+        }
+    }
+}
+
+```
+
+### wwwroot\js\site.js
+```js
+﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// for details on configuring this project to bundle and minify static web assets.
+
+// Write your JavaScript code.
+
+```

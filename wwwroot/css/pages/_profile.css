@@ -1,0 +1,319 @@
+﻿/* wwwroot/css/pages/_profile.css */
+
+.profile-container {
+    background-color: var(--base-background, #f8f9fa);
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.profile-section-card {
+    background: var(--base-white, #ffffff);
+    border-radius: var(--card-container-nho, 24px);
+    padding: var(--padding-24px, 24px);
+    box-shadow: var(--drop-shadow-medium-box-shadow, 0px 4px 26.9px 1px rgba(123, 123, 123, 0.1));
+    margin-bottom: 24px;
+}
+
+.profile-section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-200, #e5e7eb);
+}
+
+    .profile-section-title i {
+        font-size: 22px;
+        color: var(--gray-700, #374151);
+        margin-right: 8px;
+    }
+
+    .profile-section-title h4 {
+        font-family: var(--heading-h4-bold-desktop-font-family, "Inter-Bold", sans-serif);
+        font-size: var(--heading-h4-medium-desktop-font-size, 24px);
+        color: var(--gray-900, #111827);
+        margin-bottom: 0;
+        font-weight: var(--heading-h4-bold-desktop-font-weight, 700);
+    }
+
+    .profile-section-title .count {
+        font-family: var(--text-medium-regular-font-family, "Inter-Regular", sans-serif);
+        font-size: var(--text-medium-regular-font-size, 16px);
+        color: var(--gray-600, #4b5563);
+        margin-left: 8px;
+    }
+
+.profile-recipe-list .profile-recipe-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--gray-200, #e5e7eb);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+    .profile-recipe-list .profile-recipe-item:last-child {
+        border-bottom: none;
+    }
+
+.profile-recipe-item .recipe-info {
+    flex-grow: 1;
+    margin-right: 16px;
+}
+
+.profile-recipe-item .recipe-name {
+    font-family: var(--heading-h5-medium-desktop-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--heading-h5-medium-desktop-font-size, 20px);
+    font-weight: var(--heading-h5-medium-desktop-font-weight, 500);
+    color: var(--gray-900, #111827);
+    text-decoration: none;
+    margin-bottom: 4px;
+    display: block;
+}
+
+    .profile-recipe-item .recipe-name:hover {
+        color: var(--primary-600, #e66f4d);
+    }
+
+.profile-recipe-item .recipe-meta {
+    font-size: 0.875rem;
+    color: var(--gray-500, #6b7280);
+    margin-bottom: 8px;
+}
+
+    .profile-recipe-item .recipe-meta .fa-star {
+        color: var(--warning-500, #ffc107);
+    }
+
+.profile-recipe-item .recipe-description {
+    font-size: 0.9rem;
+    color: var(--gray-600, #4b5563);
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.profile-recipe-item .recipe-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+/* Nút Sửa tùy chỉnh */
+.btn-custom-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-inter);
+    color: var(--base-white, #ffffff) !important;
+    background-color: var(--primary-500, #ff7f58);
+    border: 1px solid var(--primary-500, #ff7f58);
+    border-radius: 8px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.btn-custom-edit:hover,
+.btn-custom-edit:focus {
+    background-color: var(--primary-600, #e66f4d);
+    border-color: var(--primary-600, #e66f4d);
+    color: var(--base-white, #ffffff) !important;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(255, 127, 88, 0.25);
+}
+
+.btn-custom-edit .btn-icon-fa {
+    color: var(--base-white, #ffffff);
+    margin-right: 6px;
+    font-size: 0.9em;
+    line-height: 1;
+}
+
+/* Nút Xóa tùy chỉnh */
+.btn-custom-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-inter);
+    color: var(--gray-700, #374151) !important;
+    background-color: var(--gray-50, #f9fafb);
+    border: 1px solid var(--gray-300, #d1d5db);
+    border-radius: 8px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    box-shadow: var(--drop-shadow-xsmall-box-shadow);
+}
+
+.btn-custom-delete:hover,
+.btn-custom-delete:focus {
+    background-color: var(--gray-100, #f3f4f6);
+    border-color: var(--gray-400, #9ca3af);
+    color: var(--gray-700, #374151) !important;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(209, 213, 219, 0.5);
+}
+
+.btn-custom-delete .btn-icon-fa {
+    color: var(--gray-700, #374151);
+    margin-right: 6px;
+    font-size: 0.9em;
+    line-height: 1;
+}
+
+/* Nút Quản lý tài khoản (tương tự như btn-custom-delete nhưng có thể khác màu nếu cần) */
+.btn-custom-manage {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px; /* Hơi to hơn chút */
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-inter);
+    color: var(--primary-500, #ff7f58) !important; /* Màu cam */
+    background-color: transparent;
+    border: 1px solid var(--primary-500, #ff7f58);
+    border-radius: 8px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.btn-custom-manage:hover,
+.btn-custom-manage:focus {
+    background-color: var(--primary-50, #ffede7); /* Màu cam rất nhạt */
+    border-color: var(--primary-600, #e66f4d);
+    color: var(--primary-600, #e66f4d) !important;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(255, 127, 88, 0.25);
+}
+.btn-custom-manage .btn-icon-fa {
+    color: var(--primary-500, #ff7f58);
+    margin-right: 6px;
+    font-size: 0.9em;
+    line-height: 1;
+}
+.btn-custom-manage:hover .btn-icon-fa,
+.btn-custom-manage:focus .btn-icon-fa {
+    color: var(--primary-600, #e66f4d);
+}
+
+
+.account-info-card .profile-section-title {
+    /* Có thể không cần border-bottom ở đây nếu thiết kế cho card này khác */
+    /* border-bottom: none; */
+}
+
+.account-details-list {
+    margin-bottom: 24px;
+}
+
+    .account-details-list .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        font-size: 1rem;
+        border-bottom: 1px solid var(--gray-100, #f3f4f6);
+    }
+
+        .account-details-list .detail-item:last-child {
+            border-bottom: none;
+        }
+
+    .account-details-list dt {
+        font-family: var(--text-medium-medium-font-family, "Inter-Medium", sans-serif);
+        color: var(--gray-700, #374151);
+        font-weight: var(--text-medium-medium-font-weight, 500);
+        margin-bottom: 0;
+        padding-right: 10px;
+        flex-shrink: 0;
+    }
+
+    .account-details-list dd {
+        font-family: var(--text-medium-regular-font-family, "Inter-Regular", sans-serif);
+        color: var(--gray-600, #4b5563);
+        margin-bottom: 0;
+        text-align: right;
+        word-break: break-word;
+    }
+
+.profile-section-divider {
+    border: 0;
+    border-top: 1px solid var(--gray-200, #e5e7eb);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 991.98px) {
+    .profile-recipe-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .profile-recipe-item .recipe-actions {
+            margin-top: 12px;
+            justify-content: flex-start;
+        }
+
+    .account-info-card {
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .profile-section-title h4 {
+        font-size: var(--heading-h5-bold-desktop-font-size, 20px);
+    }
+
+    .profile-section-title i {
+        font-size: 20px;
+    }
+
+    .account-details-list .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .account-details-list dd {
+        text-align: left;
+        margin-top: 4px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .profile-section-title h4 {
+        font-size: var(--heading-h5-medium-desktop-font-size, 18px);
+    }
+    .profile-recipe-item .recipe-name {
+        font-size: 1rem;
+    }
+    .btn-custom-edit, 
+    .btn-custom-delete, 
+    .btn-custom-manage {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    /* Bỏ margin-bottom cho nút cuối cùng trong nhóm cụ thể */
+    .profile-recipe-item .recipe-actions .btn-custom-delete:last-child,
+    .account-info-card .btn-custom-manage:last-child {
+         margin-bottom: 0;
+    }
+     .profile-recipe-item .recipe-actions {
+        flex-direction: column;
+        align-items: stretch; /* Đảm bảo nút chiếm full width */
+    }
+    /* Nếu chỉ có một nút trong .recipe-actions, nó cũng không nên có margin-bottom */
+    .profile-recipe-item .recipe-actions > .btn-custom-edit:last-child,
+    .profile-recipe-item .recipe-actions > .btn-custom-delete:last-child {
+        margin-bottom: 0;
+    }
+}

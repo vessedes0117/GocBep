@@ -1,0 +1,98 @@
+﻿/* wwwroot/css/components/_buttons.css */
+
+/* Nút Sửa chung (nếu dùng ở nhiều nơi ngoài profile) */
+.btn-custom-edit {
+    background-color: var(--primary-500, #ff7f58);
+    color: var(--base-white, #ffffff) !important;
+    font-family: var(--text-medium-medium-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--text-small-medium-font-size, 14px);
+    font-weight: var(--text-medium-medium-font-weight, 500);
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+    .btn-custom-edit:hover {
+        background-color: var(--primary-600, #e66f4d);
+        color: var(--base-white, #ffffff) !important;
+    }
+
+/* Nút Xóa chung (kiểu viền) */
+.btn-custom-delete {
+    background-color: var(--gray-50, #f9fafb);
+    color: var(--gray-700, #374151) !important;
+    border-color: var(--gray-300, #d1d5db);
+    font-family: var(--text-medium-medium-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--text-small-medium-font-size, 14px);
+    font-weight: var(--text-medium-medium-font-weight, 500);
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 1px solid var(--gray-300, #d1d5db);
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+    .btn-custom-delete:hover {
+        background-color: var(--gray-100, #f3f4f6);
+    }
+
+/* Nút "Quản lý tài khoản" hoặc các nút action chính khác */
+.btn-custom-manage {
+    background-color: var(--primary-500, #ff7f58);
+    color: var(--base-white, #ffffff) !important;
+    font-family: var(--text-medium-medium-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--text-small-medium-font-size, 14px); /* Figma có thể dùng 18px cho nút này */
+    font-weight: var(--text-medium-medium-font-weight, 500);
+    border-radius: 8px;
+    padding: 10px 24px; /* Padding lớn hơn cho nút chính */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+    .btn-custom-manage:hover {
+        background-color: var(--primary-600, #e66f4d);
+        color: var(--base-white, #ffffff) !important;
+    }
+
+/* Nút Hủy (kiểu secondary) */
+.btn-secondary-custom {
+    background: var(--gray-200);
+    color: var(--gray-700) !important;
+    border-radius: 8px;
+    padding: 10px 24px;
+    text-decoration: none;
+    font-family: var(--font-inter);
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid var(--gray-300);
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+    .btn-secondary-custom:hover {
+        background: var(--gray-300);
+        color: var(--gray-800) !important;
+    }
+
+
+/* Icon bên trong nút */
+.btn-icon-fa {
+    margin-right: 6px;
+    font-size: 0.9em; /* Điều chỉnh cho vừa với text nút */
+    line-height: inherit;
+}

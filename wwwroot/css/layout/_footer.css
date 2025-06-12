@@ -1,0 +1,55 @@
+﻿/* wwwroot/css/layout/_footer.css */
+.footer,
+.footer * {
+    box-sizing: border-box;
+}
+
+.footer {
+    background: var(--gray-800); /* Màu nền từ Figma */
+    padding: var(--padding-40px) 0px; /* Padding trên dưới từ Figma */
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-component-l-container, 12px); /* Khoảng cách giữa dòng copyright và links */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: auto; /* Quan trọng để footer dính cuối khi dùng flexbox cho body */
+    color: var(--color-grey-80); /* Màu chữ chung cho footer */
+}
+
+._2025-g-c-b-p-hi-n-i-all-rights-reserved { /* Nên đổi tên class này thành .footer-copyright */
+    color: var(--color-grey-80); /* #cccccc */
+    text-align: center;
+    font-family: var(--font-roboto, "Roboto", var(--font-inter)); /* Ưu tiên Roboto nếu có, fallback Inter */
+    font-size: 14px; /* Figma dùng 14.4px, làm tròn thành 14px */
+    line-height: 1.6; /* Figma dùng 23.04px / 14.4px = 1.6 */
+    font-weight: 400;
+}
+
+.footer .links { /* Container cho các link "Chính sách", "Điều khoản" */
+    display: flex;
+    gap: var(--gap-component-m-container, 8px); /* Khoảng cách giữa các phần tử (link, devider, link) */
+    align-items: center;
+}
+
+    .footer .links a.nav-link-figma-footer { /* Style cho các link trong footer */
+        color: var(--primary-500); /* Màu cam cho link */
+        text-decoration: none;
+        font-family: var(--font-inter); /* var(--text-small-medium-font-family) */
+        font-size: 14px; /* var(--text-small-medium-font-size) */
+        font-weight: 500; /* var(--text-small-medium-font-weight) */
+        padding: 8px 0px; /* Padding từ Figma (.buttons-base) */
+        transition: text-decoration 0.2s ease-in-out;
+    }
+
+        .footer .links a.nav-link-figma-footer:hover {
+            text-decoration: underline;
+            color: var(--primary-600); /* Đậm hơn khi hover */
+        }
+
+.footer .devider { /* Đường kẻ phân cách */
+    width: 1px;
+    height: 16px; /* Chiều cao của đường kẻ */
+    background-color: var(--gray-600); /* Màu sẫm hơn cho đường kẻ trên nền tối */
+    margin: 0 var(--gap-component-m-container, 8px); /* Cách đều 2 bên */
+}

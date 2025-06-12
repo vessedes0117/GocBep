@@ -1,0 +1,65 @@
+﻿/* wwwroot/css/base/_variables.css */
+:root {
+    /* Colors */
+    --base-black: #000000;
+    --base-white: #ffffff;
+    --base-background: #f8f9fa;
+    --primary-50: #ffede7;
+    --primary-100: #ffded4;
+    --primary-200: #ffbfaa;
+    --primary-300: #ffac8f;
+    --primary-400: #ffac8f;
+    --primary-500: #ff7f58;
+    --primary-600: #e66f4d;
+    --primary-700: #cc5f43;
+    --primary-800: #b34f38;
+    --primary-900: #993f2e;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --warning-500: #ffc107;
+    --warning-600: #e6ab02;
+    --success-500: #28a745;
+    --error-500: #dc3545;
+    --error-600: #c82333;
+    --files-red: #f44336; /* Dùng cho delete warning */
+    --color-white-solid: #ffffff; /* Thường trùng với --base-white */
+    --color-grey-80: #cccccc; /* Chữ copyright footer */
+    --color-orange-64: #ffaf45; /* Số điểm rating */
+    --color-grey-46: #6c757d; /* Chữ "(X lượt)" */
+    /* Fonts (Đảm bảo bạn đã import từ Google Fonts trong _Layout.cshtml) */
+    --font-playfair-display: "PlayfairDisplay", serif;
+    --font-inter: "Inter", sans-serif;
+    --font-roboto: "Roboto", sans-serif; /* Nếu bạn dùng Roboto cho footer */
+    /* -- Các biến font chi tiết hơn từ Figma có thể không cần thiết nếu bạn style trực tiếp -- */
+    /* -- Tuy nhiên, giữ lại chúng ở đây cũng không sao, hoặc bạn có thể dùng chúng để tạo các utility class sau này -- */
+    --heading-h1-bold-desktop-font-family: "Inter-Bold", "Inter", sans-serif; /* Figma có thể tạo alias "Inter-Bold" */
+    /* ... (giữ lại các biến font-family, font-size, font-weight, line-height từ Figma nếu bạn thấy cần) ... */
+    --text-medium-regular-font-family: "Inter-Regular", "Inter", sans-serif;
+    /* Spacing (Biến cho padding, gap từ Figma) */
+    --padding-16px: 16px;
+    --padding-24px: 24px;
+    --padding-36px: 36px;
+    --padding-40px: 40px;
+    --padding-96px: 96px;
+    --gap-component-s-container: 4px;
+    --gap-component-m-container: 8px;
+    --gap-component-l-container: 12px;
+    --gap-medium-large-container-cta: 24px;
+    --gap-small-medium-container-card: 16px;
+    --gap-zero-universal: 0px; /* Có thể không cần thiết */
+    --12px: 12px; /* Tên biến nên rõ ràng hơn, ví dụ: --spacing-12 */
+    --16px: 16px; /* Ví dụ: --spacing-16 */
+    --card-container-nho: 24px; /* Tên biến nên tiếng Anh: --card-padding-small hoặc --border-radius-large */
+    /* Effects (Biến cho box-shadow từ Figma) */
+    --drop-shadow-xsmall-box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    --drop-shadow-small-box-shadow: 0px 1px 2px -1px rgba(16, 24, 40, 0.1), 0px 1px 3px 0px rgba(16, 24, 40, 0.1);
+    --drop-shadow-medium-box-shadow: 0px 4px 26.9px 1px rgba(123, 123, 123, 0.1);
+}

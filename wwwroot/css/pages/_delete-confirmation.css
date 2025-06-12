@@ -1,0 +1,206 @@
+﻿/* wwwroot/css/pages/_delete-confirmation.css */
+
+.delete-confirmation-page {
+    background-color: var(--base-background, #f8f9fa);
+    padding-top: 60px;
+    padding-bottom: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 87px - 166px);
+}
+
+.delete-confirmation-card {
+    background: var(--base-white, #ffffff);
+    border-radius: var(--card-container-nho, 24px);
+    padding: var(--padding-24px, 24px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small-medium-container-card, 16px);
+    width: 100%;
+    max-width: 700px;
+    box-shadow: var(--drop-shadow-medium-box-shadow);
+    text-align: left;
+}
+
+.delete-title-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small-medium-container-card, 16px);
+    align-items: flex-start;
+    width: 100%;
+}
+
+.delete-title-main {
+    font-family: var(--heading-h4-bold-desktop-font-family, "Inter-Bold", sans-serif);
+    font-size: var(--heading-h4-bold-desktop-font-size, 28px);
+    color: var(--gray-900, #111827);
+    margin-bottom: 0;
+}
+
+.delete-warning-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--files-red, #f44336);
+    font-family: var(--text-large-medium-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--text-large-medium-font-size, 18px);
+    font-weight: var(--text-large-medium-font-weight, 500);
+}
+
+    .delete-warning-message i {
+        font-size: 1.1em;
+    }
+
+.recipe-name-confirm {
+    font-family: var(--heading-h5-medium-desktop-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--heading-h5-medium-desktop-font-size, 20px);
+    color: var(--gray-900, #111827);
+    font-weight: var(--heading-h5-medium-desktop-font-weight, 500);
+    margin-top: 8px;
+}
+
+.recipe-details-summary {
+    width: 100%;
+    margin-top: 16px;
+    border-top: 1px solid var(--gray-200, #e5e7eb);
+    padding-top: 16px;
+}
+
+.details-list {
+    font-family: var(--text-medium-regular-font-family, "Inter-Regular", sans-serif);
+    font-size: var(--text-medium-regular-font-size, 16px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-component-l-container, 12px);
+}
+
+    .details-list .detail-item {
+        display: flex;
+    }
+
+    .details-list dt {
+        font-family: var(--text-medium-medium-font-family, "Inter-Medium", sans-serif);
+        color: var(--gray-900, #111827);
+        font-weight: var(--text-medium-medium-font-weight, 500);
+        flex-basis: 150px;
+        flex-shrink: 0;
+        margin-bottom: 0;
+        padding-right: 8px;
+    }
+
+    .details-list dd {
+        color: var(--gray-600, #4b5563);
+        margin-bottom: 0;
+        margin-left: 0;
+        flex-grow: 1;
+        word-break: break-word;
+    }
+
+.recipe-thumbnail-confirm {
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+}
+
+.delete-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--padding-16px, 16px);
+    width: 100%;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-200, #e5e7eb);
+}
+
+.btn-custom-cancel {
+    background: var(--gray-50, #f9fafb);
+    color: var(--gray-700, #374151) !important;
+    border: 1px solid var(--gray-300, #d1d5db);
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-family: var(--text-large-medium-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--text-large-medium-font-size, 18px);
+    font-weight: var(--text-large-medium-font-weight, 500);
+    text-decoration: none;
+    line-height: var(--text-large-medium-line-height, 28px);
+    transition: background-color 0.15s ease-in-out;
+    cursor: pointer;
+    box-shadow: var(--drop-shadow-xsmall-box-shadow);
+}
+
+    .btn-custom-cancel:hover {
+        background-color: var(--gray-100, #f3f4f6);
+    }
+
+.btn-custom-confirm-delete {
+    background: var(--files-red, #f44336);
+    color: var(--base-white, #ffffff) !important;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-family: var(--text-large-medium-font-family, "Inter-Medium", sans-serif);
+    font-size: var(--text-large-medium-font-size, 18px);
+    font-weight: var(--text-large-medium-font-weight, 500);
+    line-height: var(--text-large-medium-line-height, 28px);
+    transition: background-color 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+    .btn-custom-confirm-delete:hover {
+        background-color: var(--error-600, #c82333);
+    }
+
+@media (max-width: 767.98px) {
+    .delete-confirmation-page {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+
+    .delete-confirmation-card {
+        padding: var(--padding-16px);
+    }
+
+    .delete-title-main {
+        font-size: 22px;
+    }
+
+    .delete-warning-message {
+        font-size: 16px;
+    }
+
+    .recipe-name-confirm {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .delete-actions {
+        flex-direction: column;
+    }
+
+        .delete-actions .btn-custom-cancel,
+        .delete-actions .btn-custom-confirm-delete {
+            width: 100%;
+        }
+
+        .delete-actions .btn-custom-confirm-delete {
+            margin-top: 10px;
+        }
+
+    .details-list .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .details-list dt {
+        flex-basis: auto;
+        margin-bottom: 4px;
+    }
+
+    .details-list dd {
+        text-align: left;
+    }
+}

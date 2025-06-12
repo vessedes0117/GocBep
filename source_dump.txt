@@ -73,6 +73,24 @@ GocBep/
 ├── obj/
 ├── wwwroot/
 │   ├── css/
+│   │   ├── base/
+│   │   │   ├── _typography.css
+│   │   │   └── _variables.css
+│   │   ├── components/
+│   │   │   ├── _buttons.css
+│   │   │   ├── _cards.css
+│   │   │   └── _forms.css
+│   │   ├── layout/
+│   │   │   ├── _footer.css
+│   │   │   └── _header.css
+│   │   ├── pages/
+│   │   │   ├── _auth.css
+│   │   │   ├── _delete-confirmation.css
+│   │   │   ├── _home.css
+│   │   │   ├── _profile.css
+│   │   │   ├── _recipe-details.css
+│   │   │   ├── _recipe-forms.css
+│   │   │   └── _search.css
 │   │   └── site.css
 │   ├── figma-assets/
 │   │   ├── icons/
@@ -96,7 +114,11 @@ GocBep/
 │   │   │   ├── ga_nuong_mat_ong.jpg
 │   │   │   └── suon_xao_chua_ngot.jpg
 │   │   └── recipes/
-│   │       └── 398e6923-0c78-4326-a79f-7fab568569ce_canh_chua_ca_loc.jpg
+│   │       ├── 042ad6bc-fbfa-4ff9-96d5-1cb0459a1c22_salad-ca-hoi-bo.png
+│   │       ├── 398e6923-0c78-4326-a79f-7fab568569ce_canh_chua_ca_loc.jpg
+│   │       ├── 428c3cb4-4b2a-409e-bdd4-8747a0a819a2_bo-la-lot-q4-18052022-6516.png
+│   │       ├── 47259dc1-788c-438f-9609-27be7d24ab99_xoi-ga-chien-nuoc-mam-va-chien-b.png
+│   │       └── 74118985-5c02-40ee-a647-19b7ca9e8226_thanh-pham-919.png
 │   ├── js/
 │   │   └── site.js
 │   ├── lib/

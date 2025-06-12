@@ -1,0 +1,199 @@
+﻿/* wwwroot/css/components/_cards.css */
+
+.recipe-card, /* Chung cho cả thiết kế cũ và mới nếu tên class này được dùng */
+.recipe-card-figma { /* Class chính cho card theo Figma */
+    background: var(--base-white, #ffffff);
+    border-radius: var(--16px, 16px);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--drop-shadow-medium-box-shadow);
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+    .recipe-card:hover,
+    .recipe-card-figma:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 8px 30px 2px rgba(123, 123, 123, 0.15); /* Shadow lớn hơn khi hover */
+    }
+
+.recipe-card__image-link, /* Class mới, ngữ nghĩa hơn */
+.recipe-card-thumbnail-link { /* Class cũ hơn */
+    display: block;
+}
+
+.recipe-card__thumbnail, /* Class mới */
+.recipe-card-thumbnail, /* Class cũ hơn */
+.recipe-card-img { /* Class từ trang search bạn sửa */
+    width: 100%;
+    height: 211px; /* Chiều cao cố định cho ảnh thumbnail */
+    object-fit: cover;
+}
+
+.recipe-card__body, /* Class mới */
+.recipe-card-body { /* Class cũ hơn */
+    padding: var(--padding-24px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-grow: 1;
+}
+
+.recipe-card__text-content, /* Class mới */
+.recipe-card-text-content { /* Class cũ hơn */
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-component-m-container, 8px);
+    flex-grow: 1;
+}
+
+.recipe-card__title, /* Class mới */
+.recipe-card .card-title { /* Class từ trang search bạn sửa */
+    font-family: var(--font-inter);
+    font-size: 22px; /* Hoặc var(--heading-h5-bold-desktop-font-size) */
+    line-height: 1.3;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: calc(1.3em * 2); /* Đảm bảo đủ chỗ cho 2 dòng */
+}
+
+    .recipe-card__title-link, /* Class mới */
+    .recipe-card .card-title a { /* Class từ trang search bạn sửa */
+        text-decoration: none;
+        color: var(--gray-900, #111827); /* Màu mặc định cho link title */
+    }
+
+        .recipe-card__title-link:hover,
+        .recipe-card .card-title a:hover {
+            color: var(--primary-600, #e66f4d);
+        }
+
+.recipe-card__description, /* Class mới */
+.recipe-card .recipe-description { /* Class từ trang search bạn sửa */
+    color: var(--gray-500);
+    font-family: var(--font-inter);
+    font-size: 15px; /* Hoặc var(--text-small-regular-font-size) */
+    line-height: 1.5;
+    font-weight: 400;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: calc(1.5em * 3); /* Đảm bảo đủ chỗ cho 3 dòng */
+    margin-bottom: 0;
+}
+
+.recipe-card__rating-info, /* Class mới */
+.recipe-card .recipe-rating { /* Class từ trang search bạn sửa */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+    .recipe-card__stars, /* Class mới */
+    .recipe-card .recipe-rating .fa-star { /* Class từ trang search bạn sửa */
+        /* Font Awesome sẽ tự có display: inline-block */
+    }
+
+        .recipe-card__stars .fa-star {
+            font-size: 16px; /* Kích thước sao */
+            margin-right: 2px;
+        }
+            /* Các class .filled và .empty sẽ được dùng trong Razor để tô màu sao */
+            .recipe-card__stars .fa-star.text-warning, /* Bootstrap class */
+            .recipe-card__stars .fa-star.filled {
+                color: var(--warning-500) !important;
+            }
+
+            .recipe-card__stars .fa-star.text-muted-light, /* Class tùy chỉnh */
+            .recipe-card__stars .fa-star.empty {
+                color: var(--gray-300);
+            }
+
+
+    .recipe-card__rating-score, /* Class mới */
+    .recipe-card .recipe-rating .ms-1:nth-of-type(1) { /* Selector phức tạp từ trang search bạn sửa, nên dùng class riêng */
+        color: var(--color-orange-64);
+        font-family: var(--font-inter);
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .recipe-card__rating-count, /* Class mới */
+    .recipe-card .recipe-rating .ms-1:nth-of-type(2) { /* Selector phức tạp, nên dùng class riêng */
+        color: var(--color-grey-46);
+        font-family: var(--font-inter);
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+.recipe-card__meta-info { /* Class mới */
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-component-s-container, 4px); /* Điều chỉnh gap nếu cần */
+    font-size: 14px; /* Hoặc var(--text-small-regular-font-size) */
+    color: var(--gray-500);
+}
+
+.recipe-card__author, /* Class mới */
+.recipe-card__post-date { /* Class mới */
+    display: flex;
+    align-items: center;
+    gap: var(--gap-component-s-container, 4px);
+}
+
+.recipe-card__icon { /* Class mới */
+    color: var(--gray-500);
+    width: 18px; /* Kích thước icon */
+    text-align: center;
+    margin-right: 4px; /* Khoảng cách icon với text */
+}
+
+.recipe-card__author-name, /* Class mới */
+.recipe-card__date-text { /* Class mới */
+    /* Style text nếu cần, thường kế thừa từ .recipe-card__meta-info */
+}
+
+.recipe-card__actions { /* Class mới */
+    margin-top: auto; /* Đẩy nút xuống cuối card */
+    text-align: right; /* Căn nút về bên phải */
+}
+/* Nút Xem chi tiết chung cho card */
+.btn-primary-custom {
+    background: var(--primary-500);
+    border-radius: 8px;
+    padding: 8px 20px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    box-shadow: var(--drop-shadow-small-box-shadow);
+    transition: background-color 0.2s ease-in-out;
+    border: none;
+    color: var(--base-white) !important;
+    font-family: var(--font-inter);
+    font-size: 16px; /* Hoặc var(--text-medium-medium-font-size) */
+    font-weight: 500; /* Hoặc var(--text-medium-medium-font-weight) */
+    cursor: pointer;
+}
+
+    .btn-primary-custom:hover {
+        background: var(--primary-600);
+        color: var(--base-white) !important;
+    }
+
+    .btn-primary-custom .btn-custom__label { /* Nếu có label riêng trong nút */
+    }
+
+    .btn-primary-custom i.fa-arrow-right { /* Icon mũi tên trong nút */
+        font-size: 0.9em;
+    }

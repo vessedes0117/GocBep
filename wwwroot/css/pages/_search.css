@@ -1,0 +1,34 @@
+﻿/* wwwroot/css/pages/_search.css */
+
+.search-results-page { /* Container cho toàn bộ trang kết quả tìm kiếm */
+    /* background-color: var(--base-background); -- Đã có ở body */
+    padding-top: var(--padding-24px);
+    padding-bottom: var(--padding-40px); /* Hoặc padding-96px */
+}
+
+    .search-results-page h1 {
+        font-family: var(--font-playfair-display); /* Hoặc Inter-Bold */
+        color: var(--gray-900);
+        font-size: var(--heading-h2-bold-desktop-font-size, 32px); /* Điều chỉnh size */
+        margin-bottom: 16px;
+    }
+
+    .search-results-page hr {
+        margin-bottom: 24px;
+    }
+
+    .search-results-page > p { /* "Tìm thấy X công thức..." hoặc "Vui lòng nhập..." */
+        font-family: var(--font-inter);
+        font-size: 1rem; /* 16px */
+        color: var(--gray-700);
+    }
+
+    .search-results-page .alert-warning { /* Thông báo không tìm thấy */
+        font-family: var(--font-inter);
+        background-color: var(--warning-50); /* Nền vàng nhạt */
+        border-color: var(--warning-200);
+        color: var(--warning-700);
+    }
+
+/* Style cho .recipe-grid và .recipe-card-figma đã có trong _cards.css và _home.css (nếu dùng chung) */
+/* Nếu bạn muốn grid trên trang search khác trang chủ, bạn có thể định nghĩa .search-recipe-grid ở đây */

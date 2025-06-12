@@ -1,0 +1,37 @@
+﻿/* wwwroot/css/base/_typography.css */
+html {
+    font-size: 16px; /* Hoặc 100% */
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: var(--font-inter); /* Font chữ mặc định cho toàn trang */
+    color: var(--gray-700); /* Màu chữ mặc định */
+    background-color: var(--base-background); /* Màu nền chung cho các trang theo Figma */
+    margin: 0; /* Bỏ margin mặc định của body */
+    padding-top: 87px; /* Khoảng cách cho header fixed, điều chỉnh dựa trên chiều cao header thực tế của bạn */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Đảm bảo body chiếm ít nhất toàn bộ chiều cao viewport */
+}
+
+main {
+    flex-grow: 1; /* Cho phép nội dung chính co giãn để đẩy footer xuống cuối */
+}
+
+/* Bạn có thể thêm các style mặc định cho h1-h6, p, a ở đây nếu muốn */
+/* Ví dụ:
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-playfair-display);
+    color: var(--gray-900);
+}
+a {
+    color: var(--primary-500);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--primary-600);
+    text-decoration: underline;
+}
+*/

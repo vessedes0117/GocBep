@@ -1,0 +1,117 @@
+﻿/* wwwroot/css/components/_forms.css */
+
+.form-group-custom { /* Class chung cho một nhóm label + input */
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* Khoảng cách giữa label và input wrapper */
+    margin-bottom: 1rem; /* Bootstrap default, hoặc var(--gap-medium-large-container-cta) */
+}
+
+.form-label-custom { /* Style cho label */
+    color: var(--gray-700);
+    font-family: var(--font-inter);
+    font-size: 14px; /* var(--text-small-medium-font-size) */
+    font-weight: 500; /* var(--text-small-medium-font-weight) */
+}
+
+/* Wrapper cho input có icon (dùng ở trang Auth) */
+.input-wrapper-custom {
+    background: var(--base-white, #ffffff);
+    border-radius: 6px;
+    border: 1px solid var(--gray-300, #d1d5db);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--drop-shadow-xsmall-box-shadow);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    .input-wrapper-custom:focus-within { /* Khi input bên trong focus */
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 0.2rem var(--primary-100); /* Dùng màu cam nhạt hơn cho shadow */
+    }
+
+.input-icon-custom { /* Icon bên trong input wrapper */
+    color: var(--gray-400);
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+    font-size: 14px; /* Kích thước icon */
+}
+
+.input-field-custom { /* Input thực sự bên trong wrapper */
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 0;
+    font-family: var(--font-inter);
+    font-size: 16px; /* var(--text-medium-regular-font-size) */
+    color: var(--gray-900);
+}
+
+    .input-field-custom::placeholder {
+        color: var(--gray-400, #9ca3af);
+        font-size: 15px; /* Cho placeholder nhỏ hơn một chút */
+    }
+
+/* Style chung cho input và textarea (dùng ở form Create/Edit Recipe) */
+.form-input-custom,
+.form-textarea-custom {
+    border-radius: 8px;
+    border: 1px solid var(--gray-300);
+    padding: 10px 12px;
+    box-shadow: var(--drop-shadow-xsmall-box-shadow);
+    font-size: 15px;
+    width: 100%;
+    font-family: var(--font-inter);
+    color: var(--gray-900);
+}
+
+    .form-input-custom:focus,
+    .form-textarea-custom:focus {
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 0.2rem var(--primary-100);
+        outline: none;
+    }
+
+.form-textarea-custom {
+    min-height: 120px; /* Chiều cao tối thiểu cho textarea */
+    resize: vertical; /* Cho phép thay đổi chiều cao theo chiều dọc */
+}
+
+/* Style cho input upload file */
+.form-file-custom { /* Class cho thẻ <input type="file"> */
+    /* Bootstrap đã có class form-control cho input file, có thể dùng nó và tùy chỉnh thêm */
+}
+
+    .form-file-custom::file-selector-button { /* Style cho nút "Choose File" */
+        background-color: var(--primary-500);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color 0.2s ease-in-out;
+        font-family: var(--font-inter);
+        font-weight: 500;
+    }
+
+        .form-file-custom::file-selector-button:hover {
+            background-color: var(--primary-600);
+        }
+
+/* Style cho input group (ví dụ: thời gian + chữ "phút") */
+.form-row-triple .input-group .form-control { /* Input bên trong input-group */
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.form-row-triple .input-group .input-group-text { /* Phần text "phút" */
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: var(--gray-100);
+    border-color: var(--gray-300);
+    font-family: var(--font-inter);
+}

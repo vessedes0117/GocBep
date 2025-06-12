@@ -1,0 +1,202 @@
+﻿/* wwwroot/css/pages/_home.css */
+
+/* HERO BANNER */
+.hero-banner {
+    background: linear-gradient( 90deg, var(--primary-500, #ff7f58) 0%, var(--primary-400, #ffac8f) 100% );
+    padding: var(--padding-36px) 12px;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-banner__content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    text-align: center;
+}
+
+.hero-banner__greeting {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-component-m-container, 8px);
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--gap-component-m-container, 8px);
+}
+
+.hero-banner__greeting-text {
+    color: var(--color-white-solid, #ffffff);
+    font-family: var(--font-playfair-display);
+    font-size: 28.8px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.hero-banner__logo-link {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-component-m-container, 8px);
+    text-decoration: none;
+}
+
+.hero-banner__logo-img {
+    width: 32.89px;
+    height: 24.22px;
+}
+
+.hero-banner__brand-name {
+    color: #ffffff;
+    font-family: var(--font-playfair-display);
+    font-size: 28.8px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.hero-banner__description-wrapper {
+}
+
+.hero-banner__description-text {
+    color: var(--gray-100, #f3f4f6);
+    font-family: var(--font-inter);
+    font-size: var(--text-medium-regular-font-size, 16px);
+    line-height: var(--text-medium-regular-line-height, 24px);
+    font-weight: var(--text-medium-regular-font-weight, 400);
+}
+
+.hero-banner__decor-left,
+.hero-banner__decor-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    opacity: 0.7;
+    height: 90%;
+    width: auto;
+    max-width: 25%;
+}
+
+.hero-banner__decor-left {
+    left: 20px;
+}
+
+.hero-banner__decor-right {
+    right: 20px;
+}
+
+/* SECTION TITLE ("Món Ăn Nổi Bật") */
+.section-title-container {
+    background: var(--base-background, #f8f9fa);
+    padding: var(--padding-40px) 0px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-component-l-container, 12px);
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+.section-title-text {
+    color: var(--gray-900, #111827);
+    font-family: var(--font-inter);
+    font-size: var(--heading-h1-bold-desktop-font-size, 40px);
+    line-height: var(--heading-h1-bold-desktop-line-height, 48px);
+    letter-spacing: var(--heading-h1-bold-desktop-letter-spacing, -0.02em);
+    font-weight: var(--heading-h1-bold-desktop-font-weight, 700);
+}
+
+.section-title-underline {
+    background: var(--primary-500, #ff7f58);
+    border-radius: 2px;
+    width: 80px;
+    height: 3px;
+}
+
+/* RECIPE LIST SECTION */
+.recipe-list-section {
+    background: var(--base-background, #f8f9fa);
+    padding-top: 0;
+    padding-bottom: var(--padding-40px);
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+@media (max-width: 991.98px) {
+    .recipe-list-section {
+        padding-bottom: var(--padding-40px);
+    }
+
+    .recipe-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hero-banner {
+        min-height: 175px;
+        padding-top: var(--padding-24px);
+        padding-bottom: var(--padding-24px);
+    }
+
+    .hero-banner__greeting-text,
+    .hero-banner__brand-name {
+        font-size: 24px;
+    }
+
+    .section-title-text {
+        font-size: 32px;
+    }
+
+    .hero-banner__decor-left,
+    .hero-banner__decor-right {
+        height: 70%;
+        max-width: 120px;
+        opacity: 0.4;
+    }
+
+    .hero-banner__decor-left {
+        left: 10px;
+    }
+
+    .hero-banner__decor-right {
+        right: 10px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .recipe-list-section {
+        padding-left: var(--padding-16px);
+        padding-right: var(--padding-16px);
+        padding-bottom: var(--padding-24px);
+    }
+
+    .recipe-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .recipe-card-figma .recipe-card__title a {
+        font-size: 18px;
+    }
+
+    .recipe-card-figma .recipe-card__description {
+        font-size: 14px;
+        -webkit-line-clamp: 2;
+        min-height: calc(1.5em * 2);
+    }
+
+    .hero-banner__greeting {
+        flex-direction: column;
+    }
+
+    .hero-banner__decor-left, .hero-banner__decor-right {
+        height: 60%;
+        max-width: 90px;
+    }
+}
